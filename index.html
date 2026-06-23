@@ -76,7 +76,8 @@ table.hm th.hc{position:sticky;left:0;z-index:20;text-align:left;padding:6px 10p
 table.hm th.gs{width:1px;background:rgba(77,216,255,0.1);padding:0}
 table.hm td{padding:4px 3px;text-align:center;border-radius:2px;height:22px;font-size:10px;min-width:28px}
 table.hm td.cc{position:sticky;left:0;z-index:5;background:#111b2e;text-align:left;padding:5px 10px;font-weight:500;white-space:nowrap;color:#8a9ab0;font-size:11px}
-table.hm td.av{background:rgba(102,255,170,0.05)}
+table.hm td.av{background:rgba(102,255,170,0.05);cursor:pointer}
+table.hm td.av:hover{background:rgba(102,255,170,0.18);box-shadow:inset 0 0 0 1px rgba(102,255,170,0.3)}
 table.hm td.fr{background:rgba(102,255,170,0.12);color:#66ffaa;font-weight:700}
 table.hm td.so{background:rgba(255,170,68,0.2);color:#ffc844;font-weight:700}
 table.hm td.md{background:rgba(255,107,107,0.12);color:#aa6666}
@@ -224,6 +225,27 @@ function fmtN(n){if(n>=10000)return(n/10000).toFixed(1)+'万';if(n>=1000)return(
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
 // === Heatmap ===
+// Category mapping: heatmap group → store category filter value
+var CAT_MAP={'中餐':'中餐','火锅':'火锅','烧烤':'烧烤','小吃快餐':'快餐小吃',
+  '水产海鲜':'生鲜','饮品':'休闲茶饮','日本料理':'日韩料理','自助餐':'自助餐',
+  '糕点-烘焙':'烘焙糕点','西餐':'西餐','东南亚菜':'东南亚菜','熟食':'快餐小吃'};
+
+function jumpToStores(cityName, catGroup){
+  // Switch to stores tab
+  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.main-tab')[0].classList.add('active');
+  document.getElementById('tabStores').classList.add('active');
+  document.getElementById('tabHeatmap').classList.remove('active');
+  // Set filters
+  F.city=cityName;
+  F.cat=CAT_MAP[catGroup]||catGroup;
+  F.prov='';F.l1='';F.q='';
+  // Re-render filters to show selection
+  renderFilters();
+  renderStores();
+  // Scroll to top
+  window.scrollTo(0,0);
+}
 function renderHM(){
   if(!HM)return;
   var rh='<button class="hm-rtab '+(HM_R==='all'?'active':'')+'" onclick="setHMR(\'all\')">全部 '+HM.cities.length+'城</button>';
@@ -259,9 +281,9 @@ function renderHM(){
     cats.forEach((cat,i)=>{
       if(gb.includes(i))h+='<td class="gs"></td>';
       var occ=city.occ[cat.id];
-      if(!occ)h+='<td class="av"></td>';
-      else if(occ.d<0)h+='<td class="fr">✓</td>';
-      else if(occ.d<=30)h+='<td class="so" title="'+occ.ds+'可抢">'+occ.ds+'</td>';
+      if(!occ)h+='<td class="av" onclick="jumpToStores(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.group+'\')" title="点击查看'+city.city+'·'+cat.label+'的门店商机" style="cursor:pointer;color:#66ffaa44">+</td>';
+      else if(occ.d<0)h+='<td class="fr" onclick="jumpToStores(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.group+'\')" title="已释放，点击查看门店" style="cursor:pointer">✓</td>';
+      else if(occ.d<=30)h+='<td class="so" onclick="jumpToStores(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.group+'\')" title="'+occ.ds+'释放，先看现有门店" style="cursor:pointer">'+occ.ds+'</td>';
       else if(occ.d<=90)h+='<td class="md" title="'+occ.ds+'">'+occ.ds+'</td>';
       else h+='<td class="fa" title="'+occ.ds+'">'+occ.ds+'</td>';
     });
