@@ -146,8 +146,8 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 <div id="tabWordpacks" class="tab-content">
   <div class="wp-search-row">
     <input class="search-input" id="wpSearch" placeholder="搜索类目或关键词（如：火锅、烧烤、粤菜）..." oninput="renderWP()">
-    <select class="filter-sel" id="wpCity" onchange="renderWP()" style="min-width:120px"><option value="">全部城市</option></select>
-    <select class="filter-sel" id="wpIndustry" onchange="renderWP()"><option value="">全部行业</option></select>
+    <select class="filter-sel" id="wpCity" onchange="onWPCityChange()" style="min-width:120px"><option value="">全部城市</option></select>
+    <select class="filter-sel" id="wpDistrict" onchange="renderWP()" style="min-width:100px;display:none"><option value="">全市均价</option></select>
   </div>
   <div class="count-bar" id="wpCount"></div>
   <div id="wpList"><div class="loading">点击"词包价格"加载数据...</div></div>
@@ -331,27 +331,38 @@ function setHMR(r){HM_R=r;renderHM()}
 var WP=null;
 function initWP(){
   if(!WP)return;
-  // Populate city dropdown
   var citySel=document.getElementById('wpCity');
   var h='<option value="">全部城市</option>';
   WP.cities.forEach(c=>{h+='<option>'+c+'</option>'});
   citySel.innerHTML=h;
-  // Populate industry dropdown
-  var industries=[...new Set(WP.cats.map(c=>c.ind))].filter(x=>x&&x!=='nan').sort();
-  var indSel=document.getElementById('wpIndustry');
-  h='<option value="">全部行业</option>';
-  industries.forEach(i=>{h+='<option>'+esc(i)+'</option>'});
-  indSel.innerHTML=h;
+  renderWP();
+}
+function onWPCityChange(){
+  var city=document.getElementById('wpCity').value;
+  var distSel=document.getElementById('wpDistrict');
+  if(!city||!WP){distSel.style.display='none';renderWP();return}
+  // Collect districts available for this city across all categories
+  var dists=new Set();
+  WP.cats.forEach(c=>{if(c.districts&&c.districts[city]){Object.keys(c.districts[city]).forEach(d=>dists.add(d))}});
+  var distArr=[...dists].sort();
+  if(distArr.length>0){
+    distSel.style.display='';
+    var h='<option value="">全市均价</option>';
+    distArr.forEach(d=>{h+='<option>'+esc(d)+'</option>'});
+    distSel.innerHTML=h;
+  }else{
+    distSel.style.display='none';
+    distSel.innerHTML='<option value="">全市均价</option>';
+  }
   renderWP();
 }
 function renderWP(){
   if(!WP)return;
   var q=(document.getElementById('wpSearch').value||'').toLowerCase().trim();
   var city=document.getElementById('wpCity').value;
-  var ind=document.getElementById('wpIndustry').value;
+  var district=document.getElementById('wpDistrict').value;
   
   var list=WP.cats.slice();
-  if(ind)list=list.filter(c=>c.ind===ind);
   if(q){
     list=list.filter(c=>{
       if(c.short.toLowerCase().includes(q))return true;
@@ -359,12 +370,11 @@ function renderWP(){
       return c.words.some(w=>w.toLowerCase().includes(q));
     });
   }
-  // Sort: matched keyword first if searching
   if(q){
     list.sort((a,b)=>{
-      var aMatch=a.words.some(w=>w.toLowerCase().includes(q))?0:1;
-      var bMatch=b.words.some(w=>w.toLowerCase().includes(q))?0:1;
-      return aMatch-bMatch||a.short.localeCompare(b.short);
+      var aM=a.words.some(w=>w.toLowerCase().includes(q))?0:1;
+      var bM=b.words.some(w=>w.toLowerCase().includes(q))?0:1;
+      return aM-bM||a.short.localeCompare(b.short);
     });
   }
   
@@ -373,44 +383,62 @@ function renderWP(){
   
   var show=list.slice(0,50),h='';
   show.forEach(c=>{
-    var price=city?c.prices[city]:null;
-    var priceRange='';
+    // Determine price
+    var price=null,priceLabel='';
+    if(city&&district&&c.districts&&c.districts[city]&&c.districts[city][district]!==undefined){
+      price=c.districts[city][district];
+      priceLabel=city+' · '+district;
+    }else if(city&&c.prices[city]!==undefined){
+      price=c.prices[city];
+      priceLabel=city+' 全市均价';
+    }else if(city&&c.districts&&c.districts[city]){
+      // City has district pricing but no city-level price and no district selected
+      var dPrices=Object.values(c.districts[city]);
+      if(dPrices.length){
+        var mn=Math.min(...dPrices),mx=Math.max(...dPrices);
+        priceLabel=city+' '+Object.keys(c.districts[city]).length+'区';
+        price=null;
+        var priceRange=mn===mx?'¥'+mn.toLocaleString():'¥'+mn.toLocaleString()+' ~ ¥'+mx.toLocaleString();
+      }
+    }
+    var priceRange2='';
     if(!city){
-      var prices=Object.values(c.prices);
-      if(prices.length){
-        var mn=Math.min(...prices),mx=Math.max(...prices);
-        priceRange=mn===mx?'¥'+mn.toLocaleString():'¥'+mn.toLocaleString()+' ~ ¥'+mx.toLocaleString();
+      var allP=Object.values(c.prices);
+      // Also include district prices for range
+      if(c.districts){Object.values(c.districts).forEach(dp=>{allP=allP.concat(Object.values(dp))})}
+      if(allP.length){
+        var mn=Math.min(...allP),mx=Math.max(...allP);
+        priceRange2=mn===mx?'¥'+mn.toLocaleString():'¥'+mn.toLocaleString()+' ~ ¥'+mx.toLocaleString();
       }
     }
     
-    // Highlight matching words
     var wordHtml=c.words.map(w=>{
       var isMatch=q&&w.toLowerCase().includes(q);
       return '<span class="wp-word'+(isMatch?' match':'')+'">'+esc(w)+'</span>';
     }).join('');
-    if(c.wordCount===0)wordHtml='<span style="color:#3a4a58;font-size:11px">无词包</span>';
+    if(!c.words||c.words.length===0)wordHtml='<span style="color:#3a4a58;font-size:11px">无词包</span>';
     
-    // Products
     var prodHtml='';
     if(c.prod&&c.prod.length&&c.prod[0]){
       prodHtml='<div class="wp-products">';
-      c.prod.forEach(p=>{
-        var label=p.replace('ADVERT_','');
-        prodHtml+='<span class="wp-prod">'+label+'</span>';
-      });
+      c.prod.forEach(p=>{prodHtml+='<span class="wp-prod">'+p.replace('ADVERT_','')+'</span>'});
       prodHtml+='</div>';
     }
     
     h+='<div class="wp-card">';
     h+='<div class="wp-cat-name">'+esc(c.short)+'</div>';
-    h+='<div class="wp-cat-meta">'+esc(c.cat)+' · '+c.wc+'个关键词'+(c.dist?' · 置顶距离'+c.dist+'km':'')+'</div>';
+    h+='<div class="wp-cat-meta">'+esc(c.cat)+' · '+c.wc+'个关键词'+(c.dist?' · 置顶'+c.dist+'km':'')+'</div>';
     h+='<div class="wp-words">'+wordHtml+'</div>';
     h+='<div class="wp-price-row">';
-    if(city&&price!==null&&price!==undefined){
+    if(price!==null&&price!==undefined){
       h+='<span class="wp-price">¥'+price.toLocaleString()+'</span>';
-      h+='<span class="wp-price-city">'+esc(city)+'</span>';
-    }else if(priceRange){
+      h+='<span class="wp-price-city">'+esc(priceLabel)+'</span>';
+    }else if(city&&priceLabel){
+      // District pricing available but no specific selection
       h+='<span class="wp-price">'+priceRange+'</span>';
+      h+='<span class="wp-price-city">'+esc(priceLabel)+' · 选区查看</span>';
+    }else if(priceRange2){
+      h+='<span class="wp-price">'+priceRange2+'</span>';
       h+='<span class="wp-price-label">全城市价格区间</span>';
     }else{
       h+='<span class="wp-price" style="color:#5a6a88">暂无报价</span>';
