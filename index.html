@@ -1,0 +1,272 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>商机筛选助手</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color:#d0d8e8;min-height:100vh;-webkit-text-size-adjust:100%}
+
+/* Login */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-box{background:#111b2e;border:1px solid rgba(77,216,255,0.1);border-radius:16px;padding:40px;width:100%;max-width:380px;text-align:center}
+.login-box h1{font-size:22px;color:#fff;margin-bottom:4px}
+.login-box h1 em{font-style:normal;color:#4dd8ff}
+.login-box .sub{font-size:12px;color:#5a6a88;margin-bottom:24px}
+.login-input{width:100%;padding:14px;border:1px solid rgba(77,216,255,0.2);border-radius:10px;background:rgba(255,255,255,0.04);color:#fff;font-size:18px;text-align:center;letter-spacing:8px;font-family:monospace;outline:none}
+.login-input:focus{border-color:#4dd8ff}
+.login-btn{width:100%;padding:14px;margin-top:16px;border:none;border-radius:10px;background:linear-gradient(135deg,#4dd8ff,#38bdf8);color:#0b1120;font-size:15px;font-weight:700;cursor:pointer}
+.login-btn:hover{opacity:0.9}
+.login-err{color:#ff6b6b;font-size:12px;margin-top:8px;min-height:16px}
+
+/* Dashboard */
+.dash{display:none;padding:12px 16px 80px}
+.dash.active{display:block}
+.dash-hdr{display:flex;justify-content:space-between;align-items:center;padding:8px 0 12px;border-bottom:1px solid rgba(77,216,255,0.08);margin-bottom:12px}
+.dash-hdr h2{font-size:16px;color:#fff}
+.dash-hdr .prov-name{font-size:12px;color:#4dd8ff}
+.logout-btn{padding:4px 12px;border:1px solid rgba(255,107,107,0.3);border-radius:8px;background:transparent;color:#ff6b6b;font-size:11px;cursor:pointer}
+
+/* KPIs */
+.kpi-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.kpi-card{background:#111b2e;border:1px solid rgba(77,216,255,0.06);border-radius:10px;padding:10px 14px;min-width:80px;flex-shrink:0}
+.kpi-v{font-size:20px;font-weight:800;color:#fff}
+.kpi-l{font-size:10px;color:#5a6a88;margin-top:2px}
+.kpi-card.green .kpi-v{color:#66ffaa}
+.kpi-card.orange .kpi-v{color:#ffaa44}
+.kpi-card.red .kpi-v{color:#ff6b6b}
+
+/* Filters */
+.filter-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.filter-sel{padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:8px;background:rgba(255,255,255,0.03);color:#8a9ab0;font-size:12px;outline:none;appearance:none;-webkit-appearance:none;min-width:90px}
+.filter-sel:focus{border-color:#4dd8ff}
+.search-input{flex:1;min-width:120px;padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:8px;background:rgba(255,255,255,0.03);color:#d0d8e8;font-size:12px;outline:none}
+.search-input:focus{border-color:#4dd8ff}
+
+/* Sort tabs */
+.sort-row{display:flex;gap:4px;margin-bottom:12px}
+.sort-btn{padding:5px 10px;border:1px solid rgba(77,216,255,0.1);border-radius:6px;background:transparent;color:#5a6a88;font-size:11px;cursor:pointer}
+.sort-btn.active{background:rgba(77,216,255,0.1);color:#4dd8ff;border-color:rgba(77,216,255,0.3)}
+
+/* Store cards */
+.store-list{display:flex;flex-direction:column;gap:8px}
+.store-card{background:#111b2e;border:1px solid rgba(77,216,255,0.06);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden}
+.store-card.p0{border-left:3px solid #ff6b6b}
+.store-card.p1{border-left:3px solid #ffaa44}
+.store-card .sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.sc-name{font-size:14px;font-weight:600;color:#e0e6f0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sc-score{font-size:16px;font-weight:800;padding:2px 8px;border-radius:6px;flex-shrink:0;margin-left:8px}
+.sc-score.p0{background:rgba(255,107,107,0.15);color:#ff6b6b}
+.sc-score.p1{background:rgba(255,170,68,0.15);color:#ffaa44}
+.sc-score.p2{background:rgba(77,216,255,0.08);color:#5a8aaa}
+.sc-meta{display:flex;gap:8px;font-size:11px;color:#5a6a88;margin-bottom:8px;flex-wrap:wrap}
+.sc-meta span{display:flex;align-items:center;gap:3px}
+.sc-tags{display:flex;gap:4px;flex-wrap:wrap}
+.sc-tag{padding:2px 7px;border-radius:6px;font-size:10px;font-weight:600}
+.tag-l1{background:rgba(77,216,255,0.1);color:#4dd8ff}
+.tag-trade{background:rgba(255,107,107,0.12);color:#ff6b6b}
+.tag-adv{background:rgba(255,170,68,0.12);color:#ffaa44}
+.tag-potential{background:rgba(102,255,170,0.1);color:#66ffaa}
+.sc-nums{display:flex;gap:12px;font-size:11px;color:#5a6a88;margin-top:6px}
+.sc-nums .num-val{color:#c8d0e0;font-weight:600}
+
+/* Empty */
+.empty-msg{text-align:center;padding:40px 20px;color:#5a6a88;font-size:13px}
+
+/* Count */
+.count-bar{font-size:11px;color:#5a6a88;margin-bottom:8px}
+</style></head><body>
+
+<div id="loginPage" class="login-wrap">
+  <div class="login-box">
+    <h1>商机 <em>筛选助手</em></h1>
+    <div class="sub">输入服务商访问码登录查看门店商机</div>
+    <input id="codeInput" class="login-input" maxlength="6" placeholder="------" autocomplete="off">
+    <button id="loginBtn" class="login-btn" onclick="doLogin()">登 录</button>
+    <div id="loginErr" class="login-err"></div>
+  </div>
+</div>
+
+<div id="dashPage" class="dash">
+  <div class="dash-hdr">
+    <div><h2 id="dashTitle">门店商机</h2><span class="prov-name" id="provInfo"></span></div>
+    <button class="logout-btn" onclick="doLogout()">退出</button>
+  </div>
+  <div class="kpi-row" id="kpiRow"></div>
+  <div class="filter-row" id="filterRow"></div>
+  <div class="sort-row" id="sortRow"></div>
+  <div class="count-bar" id="countBar"></div>
+  <div class="store-list" id="storeList"></div>
+</div>
+
+<script>
+var INDEX=null, STORES=null, PROV=null, FILTERS={city:'',cat:'',l1:'',search:''}, SORT='score';
+
+fetch('data/index.json').then(r=>r.json()).then(d=>{INDEX=d}).catch(e=>console.error('Index load failed',e));
+
+function doLogin(){
+  var code=document.getElementById('codeInput').value.toUpperCase().trim();
+  if(!INDEX){document.getElementById('loginErr').textContent='数据加载中，请稍后重试';return}
+  var found=INDEX.providers.find(p=>p.code===code);
+  if(!found){document.getElementById('loginErr').textContent='访问码无效';return}
+  PROV=found;
+  localStorage.setItem('login_code',code);
+  loadProvider();
+}
+function doLogout(){localStorage.removeItem('login_code');location.reload()}
+
+function loadProvider(){
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('dashPage').classList.add('active');
+  document.getElementById('dashTitle').textContent=PROV.name;
+  document.getElementById('provInfo').textContent=PROV.cities+'城 · '+PROV.stores+'家活跃门店';
+  
+  fetch('data/providers/'+PROV.file).then(r=>r.json()).then(d=>{
+    STORES=d.stores||[];
+    renderKPIs();
+    renderFilters();
+    renderSort();
+    renderStores();
+  }).catch(e=>{
+    document.getElementById('storeList').innerHTML='<div class="empty-msg">数据加载失败</div>';
+  });
+}
+
+function renderKPIs(){
+  var total=STORES.length;
+  var p0=STORES.filter(s=>s.s>=40).length;
+  var p1=STORES.filter(s=>s.s>=25&&s.s<40).length;
+  var tradeBig=STORES.filter(s=>s.l==='交易大户').length;
+  var advOn=STORES.filter(s=>s.l==='广告在投').length;
+  var highPot=STORES.filter(s=>s.l==='高潜未投').length;
+  
+  document.getElementById('kpiRow').innerHTML=
+    '<div class="kpi-card"><div class="kpi-v">'+total+'</div><div class="kpi-l">活跃门店</div></div>'+
+    '<div class="kpi-card red"><div class="kpi-v">'+p0+'</div><div class="kpi-l">P0优先</div></div>'+
+    '<div class="kpi-card orange"><div class="kpi-v">'+p1+'</div><div class="kpi-l">P1重点</div></div>'+
+    '<div class="kpi-card green"><div class="kpi-v">'+tradeBig+'</div><div class="kpi-l">交易大户</div></div>'+
+    '<div class="kpi-card"><div class="kpi-v">'+advOn+'</div><div class="kpi-l">广告在投</div></div>'+
+    '<div class="kpi-card green"><div class="kpi-v">'+highPot+'</div><div class="kpi-l">高潜未投</div></div>';
+}
+
+function renderFilters(){
+  var cities=[...new Set(STORES.map(s=>s.c))].sort();
+  var cats=[...new Set(STORES.map(s=>s.cat))].sort();
+  var l1s=['交易大户','广告在投','高潜未投','潜力成长','待激活'];
+  
+  var html='<select class="filter-sel" onchange="FILTERS.city=this.value;renderStores()"><option value="">全部城市</option>';
+  cities.forEach(c=>{html+='<option value="'+c+'">'+c+'</option>'});
+  html+='</select>';
+  
+  html+='<select class="filter-sel" onchange="FILTERS.cat=this.value;renderStores()"><option value="">全部类目</option>';
+  cats.forEach(c=>{html+='<option value="'+c+'">'+c+'</option>'});
+  html+='</select>';
+  
+  html+='<select class="filter-sel" onchange="FILTERS.l1=this.value;renderStores()"><option value="">全部标签</option>';
+  l1s.forEach(l=>{html+='<option value="'+l+'">'+l+'</option>'});
+  html+='</select>';
+  
+  html+='<input class="search-input" placeholder="搜索门店名..." oninput="FILTERS.search=this.value;renderStores()">';
+  
+  document.getElementById('filterRow').innerHTML=html;
+}
+
+function renderSort(){
+  document.getElementById('sortRow').innerHTML=
+    '<button class="sort-btn active" onclick="setSort(this,\'score\')">按评分</button>'+
+    '<button class="sort-btn" onclick="setSort(this,\'gmv\')">按GMV</button>'+
+    '<button class="sort-btn" onclick="setSort(this,\'ad\')">按广告消耗</button>'+
+    '<button class="sort-btn" onclick="setSort(this,\'name\')">按名称</button>';
+}
+function setSort(el,mode){
+  SORT=mode;
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderStores();
+}
+
+function renderStores(){
+  if(!STORES)return;
+  var list=STORES.slice();
+  
+  // Filter
+  if(FILTERS.city) list=list.filter(s=>s.c===FILTERS.city);
+  if(FILTERS.cat) list=list.filter(s=>s.cat===FILTERS.cat);
+  if(FILTERS.l1) list=list.filter(s=>s.l===FILTERS.l1);
+  if(FILTERS.search){
+    var q=FILTERS.search.toLowerCase();
+    list=list.filter(s=>(s.n||'').toLowerCase().includes(q));
+  }
+  
+  // Sort
+  if(SORT==='score') list.sort((a,b)=>(b.s||0)-(a.s||0));
+  else if(SORT==='gmv') list.sort((a,b)=>(b.g||0)-(a.g||0));
+  else if(SORT==='ad') list.sort((a,b)=>(b.ad||0)-(a.ad||0));
+  else if(SORT==='name') list.sort((a,b)=>(a.n||'').localeCompare(b.n||''));
+  
+  document.getElementById('countBar').textContent='共 '+list.length+' 家门店';
+  
+  if(list.length===0){
+    document.getElementById('storeList').innerHTML='<div class="empty-msg">无匹配门店</div>';
+    return;
+  }
+  
+  // Render (max 200 for performance)
+  var show=list.slice(0,200);
+  var html='';
+  show.forEach(s=>{
+    var pClass=s.s>=40?'p0':(s.s>=25?'p1':'');
+    var sClass=s.s>=40?'p0':(s.s>=25?'p1':'p2');
+    
+    // Tags
+    var tags='<span class="sc-tag tag-l1">'+s.l+'</span>';
+    if(s.l==='交易大户') tags+='<span class="sc-tag tag-trade">高GMV未投广告</span>';
+    else if(s.l==='广告在投') tags+='<span class="sc-tag tag-adv">可追售</span>';
+    else if(s.l==='高潜未投') tags+='<span class="sc-tag tag-potential">优先攻坚</span>';
+    
+    // Numbers
+    var nums='';
+    if(s.g) nums+='<span>GMV <span class="num-val">'+fmtNum(s.g)+'</span></span>';
+    if(s.ad) nums+='<span>广告 <span class="num-val">'+fmtNum(s.ad)+'</span></span>';
+    if(s.ca) nums+='<span>现金 <span class="num-val">'+fmtNum(s.ca)+'</span></span>';
+    if(!nums) nums='<span style="color:#3a4a58">无经营数据</span>';
+    
+    html+='<div class="store-card '+pClass+'">'+
+      '<div class="sc-top"><span class="sc-name">'+esc(s.n)+'</span><span class="sc-score '+sClass+'">'+s.s+'分</span></div>'+
+      '<div class="sc-meta"><span>'+s.c+'</span><span>'+s.cat+'</span><span style="color:#3a4a58;font-size:10px">PID:'+s.pid.slice(-6)+'</span></div>'+
+      '<div class="sc-tags">'+tags+'</div>'+
+      '<div class="sc-nums">'+nums+'</div>'+
+    '</div>';
+  });
+  
+  if(list.length>200) html+='<div class="empty-msg">显示前200条，请使用筛选缩小范围</div>';
+  document.getElementById('storeList').innerHTML=html;
+}
+
+function fmtNum(n){
+  if(n>=10000)return(n/10000).toFixed(1)+'万';
+  if(n>=1000)return(n/1000).toFixed(1)+'K';
+  return String(Math.round(n));
+}
+function esc(s){return(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// Auto-login
+(function(){
+  var saved=localStorage.getItem('login_code');
+  if(saved&&INDEX){
+    var found=INDEX.providers.find(p=>p.code===saved);
+    if(found){PROV=found;loadProvider();return}
+  }
+  // Wait for index to load
+  var check=setInterval(function(){
+    if(INDEX&&saved){
+      clearInterval(check);
+      var found=INDEX.providers.find(p=>p.code===saved);
+      if(found){PROV=found;loadProvider()}
+    }
+  },200);
+})();
+
+// Enter key login
+document.getElementById('codeInput').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
+</script>
+</body></html>
