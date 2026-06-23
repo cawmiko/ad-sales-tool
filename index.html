@@ -15,7 +15,6 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .login-input{width:100%;padding:14px;border:1px solid rgba(77,216,255,0.2);border-radius:10px;background:rgba(255,255,255,0.04);color:#fff;font-size:18px;text-align:center;letter-spacing:8px;font-family:monospace;outline:none}
 .login-input:focus{border-color:#4dd8ff}
 .login-btn{width:100%;padding:14px;margin-top:16px;border:none;border-radius:10px;background:linear-gradient(135deg,#4dd8ff,#38bdf8);color:#0b1120;font-size:15px;font-weight:700;cursor:pointer}
-.login-btn:hover{opacity:0.9}
 .login-err{color:#ff6b6b;font-size:12px;margin-top:8px;min-height:16px}
 
 /* Dashboard */
@@ -25,6 +24,16 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .dash-hdr h2{font-size:16px;color:#fff}
 .dash-hdr .prov-name{font-size:12px;color:#4dd8ff}
 .logout-btn{padding:4px 12px;border:1px solid rgba(255,107,107,0.3);border-radius:8px;background:transparent;color:#ff6b6b;font-size:11px;cursor:pointer}
+
+/* Main tabs */
+.main-tabs{display:flex;gap:0;margin-bottom:14px;border-bottom:1px solid rgba(77,216,255,0.08)}
+.main-tab{padding:10px 18px;font-size:13px;cursor:pointer;background:transparent;color:#5a6a88;border:none;border-bottom:2px solid transparent;font-weight:500}
+.main-tab:hover{color:#8a9ab0}
+.main-tab.active{color:#4dd8ff;border-bottom-color:#4dd8ff;font-weight:600}
+
+/* Tab content */
+.tab-content{display:none}
+.tab-content.active{display:block}
 
 /* KPIs */
 .kpi-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
@@ -38,28 +47,25 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 /* Filters */
 .filter-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
 .filter-sel{padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:8px;background:rgba(255,255,255,0.03);color:#8a9ab0;font-size:12px;outline:none;appearance:none;-webkit-appearance:none;min-width:90px}
-.filter-sel:focus{border-color:#4dd8ff}
 .search-input{flex:1;min-width:120px;padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:8px;background:rgba(255,255,255,0.03);color:#d0d8e8;font-size:12px;outline:none}
-.search-input:focus{border-color:#4dd8ff}
+.filter-sel:focus,.search-input:focus{border-color:#4dd8ff}
 
-/* Sort tabs */
+/* Sort */
 .sort-row{display:flex;gap:4px;margin-bottom:12px}
 .sort-btn{padding:5px 10px;border:1px solid rgba(77,216,255,0.1);border-radius:6px;background:transparent;color:#5a6a88;font-size:11px;cursor:pointer}
 .sort-btn.active{background:rgba(77,216,255,0.1);color:#4dd8ff;border-color:rgba(77,216,255,0.3)}
 
 /* Store cards */
-.store-list{display:flex;flex-direction:column;gap:8px}
-.store-card{background:#111b2e;border:1px solid rgba(77,216,255,0.06);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden}
+.store-card{background:#111b2e;border:1px solid rgba(77,216,255,0.06);border-radius:10px;padding:12px 14px;margin-bottom:8px;position:relative}
 .store-card.p0{border-left:3px solid #ff6b6b}
 .store-card.p1{border-left:3px solid #ffaa44}
-.store-card .sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
 .sc-name{font-size:14px;font-weight:600;color:#e0e6f0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sc-score{font-size:16px;font-weight:800;padding:2px 8px;border-radius:6px;flex-shrink:0;margin-left:8px}
 .sc-score.p0{background:rgba(255,107,107,0.15);color:#ff6b6b}
 .sc-score.p1{background:rgba(255,170,68,0.15);color:#ffaa44}
 .sc-score.p2{background:rgba(77,216,255,0.08);color:#5a8aaa}
-.sc-meta{display:flex;gap:8px;font-size:11px;color:#5a6a88;margin-bottom:8px;flex-wrap:wrap}
-.sc-meta span{display:flex;align-items:center;gap:3px}
+.sc-meta{display:flex;gap:8px;font-size:11px;color:#5a6a88;margin-bottom:6px}
 .sc-tags{display:flex;gap:4px;flex-wrap:wrap}
 .sc-tag{padding:2px 7px;border-radius:6px;font-size:10px;font-weight:600}
 .tag-l1{background:rgba(77,216,255,0.1);color:#4dd8ff}
@@ -67,206 +73,255 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .tag-adv{background:rgba(255,170,68,0.12);color:#ffaa44}
 .tag-potential{background:rgba(102,255,170,0.1);color:#66ffaa}
 .sc-nums{display:flex;gap:12px;font-size:11px;color:#5a6a88;margin-top:6px}
-.sc-nums .num-val{color:#c8d0e0;font-weight:600}
-
-/* Empty */
+.sc-nums .nv{color:#c8d0e0;font-weight:600}
+.count-bar{font-size:11px;color:#5a6a88;margin-bottom:8px}
 .empty-msg{text-align:center;padding:40px 20px;color:#5a6a88;font-size:13px}
 
-/* Count */
-.count-bar{font-size:11px;color:#5a6a88;margin-bottom:8px}
+/* === Heatmap styles === */
+.hm-legend{display:flex;gap:12px;padding:8px 0;font-size:11px;color:#5a6a88;flex-wrap:wrap;margin-bottom:10px}
+.hm-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:3px;vertical-align:middle}
+.hm-region-tabs{display:flex;gap:0;margin-bottom:12px;overflow-x:auto;border-bottom:1px solid rgba(77,216,255,0.06)}
+.hm-region-tab{padding:8px 14px;font-size:12px;cursor:pointer;background:transparent;color:#5a6a88;border:none;border-bottom:2px solid transparent;white-space:nowrap}
+.hm-region-tab:hover{color:#8a9ab0}
+.hm-region-tab.active{color:#4dd8ff;border-bottom-color:#4dd8ff}
+.hm-kpis{display:flex;gap:8px;margin-bottom:12px}
+
+.hm-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.hm{border-collapse:separate;border-spacing:1px;font-size:11px;width:100%}
+table.hm th{position:sticky;top:0;z-index:10;background:#0e1728;padding:5px 3px;font-weight:600;color:#5a7a9a;font-size:10px;white-space:nowrap;text-align:center}
+table.hm th.hc{position:sticky;left:0;z-index:20;text-align:left;padding:6px 10px;color:#8a9ab0;writing-mode:horizontal-tb;min-width:80px}
+table.hm th.gsep{width:1px;background:rgba(77,216,255,0.1);padding:0}
+table.hm td{padding:4px 3px;text-align:center;border-radius:2px;height:22px;font-size:10px;min-width:28px}
+table.hm td.cc{position:sticky;left:0;z-index:5;background:#111b2e;text-align:left;padding:5px 10px;font-weight:500;white-space:nowrap;color:#8a9ab0;font-size:11px}
+table.hm td.avail{background:rgba(102,255,170,0.05)}
+table.hm td.free{background:rgba(102,255,170,0.12);color:#66ffaa;font-weight:700}
+table.hm td.soon{background:rgba(255,170,68,0.2);color:#ffc844;font-weight:700}
+table.hm td.mid{background:rgba(255,107,107,0.12);color:#aa6666}
+table.hm td.far{background:rgba(255,80,80,0.05);color:#553838}
+table.hm td.gsep{width:1px;background:rgba(77,216,255,0.04);padding:0}
+table.hm td.sa{color:#66ffaa;font-weight:700;text-align:center;padding:4px 6px}
+table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
+.rsep td{padding:0 !important;border:none !important}
+.rsep .rlbl{font-size:10px;color:#4dd8ff;font-weight:700;padding:10px 10px 4px;letter-spacing:2px;background:#111b2e}
+.lc-hint{font-size:8px;color:#3a4a58;display:block;margin-top:1px}
 </style></head><body>
 
 <div id="loginPage" class="login-wrap">
   <div class="login-box">
     <h1>商机 <em>筛选助手</em></h1>
-    <div class="sub">输入服务商访问码登录查看门店商机</div>
+    <div class="sub">输入服务商访问码登录查看门店商机和抢占地图</div>
     <input id="codeInput" class="login-input" maxlength="6" placeholder="------" autocomplete="off">
-    <button id="loginBtn" class="login-btn" onclick="doLogin()">登 录</button>
+    <button class="login-btn" onclick="doLogin()">登 录</button>
     <div id="loginErr" class="login-err"></div>
   </div>
 </div>
 
 <div id="dashPage" class="dash">
   <div class="dash-hdr">
-    <div><h2 id="dashTitle">门店商机</h2><span class="prov-name" id="provInfo"></span></div>
+    <div><h2 id="dashTitle"></h2><span class="prov-name" id="provInfo"></span></div>
     <button class="logout-btn" onclick="doLogout()">退出</button>
   </div>
-  <div class="kpi-row" id="kpiRow"></div>
-  <div class="filter-row" id="filterRow"></div>
-  <div class="sort-row" id="sortRow"></div>
-  <div class="count-bar" id="countBar"></div>
-  <div class="store-list" id="storeList"></div>
+  
+  <div class="main-tabs">
+    <button class="main-tab active" onclick="switchTab('stores',this)">我的门店</button>
+    <button class="main-tab" onclick="switchTab('heatmap',this)">抢占地图</button>
+  </div>
+
+  <!-- Stores tab -->
+  <div id="tabStores" class="tab-content active">
+    <div class="kpi-row" id="kpiRow"></div>
+    <div class="filter-row" id="filterRow"></div>
+    <div class="sort-row" id="sortRow"></div>
+    <div class="count-bar" id="countBar"></div>
+    <div id="storeList"></div>
+  </div>
+
+  <!-- Heatmap tab -->
+  <div id="tabHeatmap" class="tab-content">
+    <div class="hm-legend">
+      <span><i style="background:rgba(102,255,170,0.08)"></i>空白可抢</span>
+      <span><i style="background:rgba(102,255,170,0.15)"></i>已释放</span>
+      <span><i style="background:rgba(255,170,68,0.25)"></i>30天内释放</span>
+      <span><i style="background:rgba(255,107,107,0.15)"></i>30-90天</span>
+      <span><i style="background:rgba(255,80,80,0.06)"></i>90天+</span>
+    </div>
+    <div class="hm-region-tabs" id="hmRegionTabs"></div>
+    <div class="hm-kpis" id="hmKpis"></div>
+    <div class="hm-wrap" id="hmWrap"></div>
+  </div>
 </div>
 
 <script>
-var INDEX=null, STORES=null, PROV=null, FILTERS={city:'',cat:'',l1:'',search:''}, SORT='score';
+var INDEX=null,STORES=null,PROV=null,FILTERS={city:'',cat:'',l1:'',search:''},SORT='score';
+var HM=null,HM_REGION='all';
 
-fetch('data/index.json').then(r=>r.json()).then(d=>{INDEX=d}).catch(e=>console.error('Index load failed',e));
+// Load index
+fetch('data/index.json').then(r=>r.json()).then(d=>{INDEX=d;tryAutoLogin()}).catch(e=>console.error(e));
 
+function tryAutoLogin(){
+  var saved=localStorage.getItem('login_code');
+  if(saved&&INDEX){var f=INDEX.providers.find(p=>p.code===saved);if(f){PROV=f;loadProvider()}}
+}
 function doLogin(){
   var code=document.getElementById('codeInput').value.toUpperCase().trim();
-  if(!INDEX){document.getElementById('loginErr').textContent='数据加载中，请稍后重试';return}
+  if(!INDEX){document.getElementById('loginErr').textContent='数据加载中';return}
   var found=INDEX.providers.find(p=>p.code===code);
   if(!found){document.getElementById('loginErr').textContent='访问码无效';return}
-  PROV=found;
-  localStorage.setItem('login_code',code);
-  loadProvider();
+  PROV=found;localStorage.setItem('login_code',code);loadProvider();
 }
 function doLogout(){localStorage.removeItem('login_code');location.reload()}
+
+function switchTab(tab,el){
+  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tabStores').classList.toggle('active',tab==='stores');
+  document.getElementById('tabHeatmap').classList.toggle('active',tab==='heatmap');
+  if(tab==='heatmap'&&!HM) loadHeatmap();
+}
 
 function loadProvider(){
   document.getElementById('loginPage').style.display='none';
   document.getElementById('dashPage').classList.add('active');
   document.getElementById('dashTitle').textContent=PROV.name;
   document.getElementById('provInfo').textContent=PROV.cities+'城 · '+PROV.stores+'家活跃门店';
-  
   fetch('data/providers/'+PROV.file).then(r=>r.json()).then(d=>{
-    STORES=d.stores||[];
-    renderKPIs();
-    renderFilters();
-    renderSort();
-    renderStores();
-  }).catch(e=>{
-    document.getElementById('storeList').innerHTML='<div class="empty-msg">数据加载失败</div>';
-  });
+    STORES=d.stores||[];renderKPIs();renderFilters();renderSort();renderStores();
+  }).catch(e=>{document.getElementById('storeList').innerHTML='<div class="empty-msg">数据加载失败</div>'});
 }
 
+// === Stores tab ===
 function renderKPIs(){
-  var total=STORES.length;
-  var p0=STORES.filter(s=>s.s>=40).length;
-  var p1=STORES.filter(s=>s.s>=25&&s.s<40).length;
-  var tradeBig=STORES.filter(s=>s.l==='交易大户').length;
-  var advOn=STORES.filter(s=>s.l==='广告在投').length;
-  var highPot=STORES.filter(s=>s.l==='高潜未投').length;
-  
+  var t=STORES.length,p0=STORES.filter(s=>s.s>=40).length,p1=STORES.filter(s=>s.s>=25&&s.s<40).length;
+  var tb=STORES.filter(s=>s.l==='交易大户').length,adv=STORES.filter(s=>s.l==='广告在投').length;
+  var hp=STORES.filter(s=>s.l==='高潜未投').length;
   document.getElementById('kpiRow').innerHTML=
-    '<div class="kpi-card"><div class="kpi-v">'+total+'</div><div class="kpi-l">活跃门店</div></div>'+
+    '<div class="kpi-card"><div class="kpi-v">'+t+'</div><div class="kpi-l">活跃门店</div></div>'+
     '<div class="kpi-card red"><div class="kpi-v">'+p0+'</div><div class="kpi-l">P0优先</div></div>'+
     '<div class="kpi-card orange"><div class="kpi-v">'+p1+'</div><div class="kpi-l">P1重点</div></div>'+
-    '<div class="kpi-card green"><div class="kpi-v">'+tradeBig+'</div><div class="kpi-l">交易大户</div></div>'+
-    '<div class="kpi-card"><div class="kpi-v">'+advOn+'</div><div class="kpi-l">广告在投</div></div>'+
-    '<div class="kpi-card green"><div class="kpi-v">'+highPot+'</div><div class="kpi-l">高潜未投</div></div>';
+    '<div class="kpi-card green"><div class="kpi-v">'+tb+'</div><div class="kpi-l">交易大户</div></div>'+
+    '<div class="kpi-card"><div class="kpi-v">'+adv+'</div><div class="kpi-l">广告在投</div></div>'+
+    '<div class="kpi-card green"><div class="kpi-v">'+hp+'</div><div class="kpi-l">高潜未投</div></div>';
 }
-
 function renderFilters(){
-  var cities=[...new Set(STORES.map(s=>s.c))].sort();
-  var cats=[...new Set(STORES.map(s=>s.cat))].sort();
+  var cities=[...new Set(STORES.map(s=>s.c))].sort(),cats=[...new Set(STORES.map(s=>s.cat))].sort();
   var l1s=['交易大户','广告在投','高潜未投','潜力成长','待激活'];
-  
-  var html='<select class="filter-sel" onchange="FILTERS.city=this.value;renderStores()"><option value="">全部城市</option>';
-  cities.forEach(c=>{html+='<option value="'+c+'">'+c+'</option>'});
-  html+='</select>';
-  
-  html+='<select class="filter-sel" onchange="FILTERS.cat=this.value;renderStores()"><option value="">全部类目</option>';
-  cats.forEach(c=>{html+='<option value="'+c+'">'+c+'</option>'});
-  html+='</select>';
-  
-  html+='<select class="filter-sel" onchange="FILTERS.l1=this.value;renderStores()"><option value="">全部标签</option>';
-  l1s.forEach(l=>{html+='<option value="'+l+'">'+l+'</option>'});
-  html+='</select>';
-  
-  html+='<input class="search-input" placeholder="搜索门店名..." oninput="FILTERS.search=this.value;renderStores()">';
-  
-  document.getElementById('filterRow').innerHTML=html;
+  var h='<select class="filter-sel" onchange="FILTERS.city=this.value;renderStores()"><option value="">全部城市</option>';
+  cities.forEach(c=>{h+='<option>'+c+'</option>'});
+  h+='</select><select class="filter-sel" onchange="FILTERS.cat=this.value;renderStores()"><option value="">全部类目</option>';
+  cats.forEach(c=>{h+='<option>'+c+'</option>'});
+  h+='</select><select class="filter-sel" onchange="FILTERS.l1=this.value;renderStores()"><option value="">全部标签</option>';
+  l1s.forEach(l=>{h+='<option>'+l+'</option>'});
+  h+='</select><input class="search-input" placeholder="搜索门店名..." oninput="FILTERS.search=this.value;renderStores()">';
+  document.getElementById('filterRow').innerHTML=h;
 }
-
 function renderSort(){
   document.getElementById('sortRow').innerHTML=
     '<button class="sort-btn active" onclick="setSort(this,\'score\')">按评分</button>'+
     '<button class="sort-btn" onclick="setSort(this,\'gmv\')">按GMV</button>'+
-    '<button class="sort-btn" onclick="setSort(this,\'ad\')">按广告消耗</button>'+
+    '<button class="sort-btn" onclick="setSort(this,\'ad\')">按广告</button>'+
     '<button class="sort-btn" onclick="setSort(this,\'name\')">按名称</button>';
 }
-function setSort(el,mode){
-  SORT=mode;
-  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderStores();
-}
-
+function setSort(el,m){SORT=m;document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderStores()}
 function renderStores(){
-  if(!STORES)return;
-  var list=STORES.slice();
-  
-  // Filter
-  if(FILTERS.city) list=list.filter(s=>s.c===FILTERS.city);
-  if(FILTERS.cat) list=list.filter(s=>s.cat===FILTERS.cat);
-  if(FILTERS.l1) list=list.filter(s=>s.l===FILTERS.l1);
-  if(FILTERS.search){
-    var q=FILTERS.search.toLowerCase();
-    list=list.filter(s=>(s.n||'').toLowerCase().includes(q));
-  }
-  
-  // Sort
-  if(SORT==='score') list.sort((a,b)=>(b.s||0)-(a.s||0));
-  else if(SORT==='gmv') list.sort((a,b)=>(b.g||0)-(a.g||0));
-  else if(SORT==='ad') list.sort((a,b)=>(b.ad||0)-(a.ad||0));
-  else if(SORT==='name') list.sort((a,b)=>(a.n||'').localeCompare(b.n||''));
-  
+  if(!STORES)return;var list=STORES.slice();
+  if(FILTERS.city)list=list.filter(s=>s.c===FILTERS.city);
+  if(FILTERS.cat)list=list.filter(s=>s.cat===FILTERS.cat);
+  if(FILTERS.l1)list=list.filter(s=>s.l===FILTERS.l1);
+  if(FILTERS.search){var q=FILTERS.search.toLowerCase();list=list.filter(s=>(s.n||'').toLowerCase().includes(q))}
+  if(SORT==='score')list.sort((a,b)=>(b.s||0)-(a.s||0));
+  else if(SORT==='gmv')list.sort((a,b)=>(b.g||0)-(a.g||0));
+  else if(SORT==='ad')list.sort((a,b)=>(b.ad||0)-(a.ad||0));
+  else list.sort((a,b)=>(a.n||'').localeCompare(b.n||''));
   document.getElementById('countBar').textContent='共 '+list.length+' 家门店';
-  
-  if(list.length===0){
-    document.getElementById('storeList').innerHTML='<div class="empty-msg">无匹配门店</div>';
-    return;
-  }
-  
-  // Render (max 200 for performance)
-  var show=list.slice(0,200);
-  var html='';
+  if(!list.length){document.getElementById('storeList').innerHTML='<div class="empty-msg">无匹配门店</div>';return}
+  var show=list.slice(0,200),h='';
   show.forEach(s=>{
-    var pClass=s.s>=40?'p0':(s.s>=25?'p1':'');
-    var sClass=s.s>=40?'p0':(s.s>=25?'p1':'p2');
-    
-    // Tags
+    var pc=s.s>=40?'p0':(s.s>=25?'p1':''),sc=s.s>=40?'p0':(s.s>=25?'p1':'p2');
     var tags='<span class="sc-tag tag-l1">'+s.l+'</span>';
-    if(s.l==='交易大户') tags+='<span class="sc-tag tag-trade">高GMV未投广告</span>';
-    else if(s.l==='广告在投') tags+='<span class="sc-tag tag-adv">可追售</span>';
-    else if(s.l==='高潜未投') tags+='<span class="sc-tag tag-potential">优先攻坚</span>';
-    
-    // Numbers
+    if(s.l==='交易大户')tags+='<span class="sc-tag tag-trade">高GMV未投</span>';
+    else if(s.l==='广告在投')tags+='<span class="sc-tag tag-adv">可追售</span>';
+    else if(s.l==='高潜未投')tags+='<span class="sc-tag tag-potential">优先攻坚</span>';
     var nums='';
-    if(s.g) nums+='<span>GMV <span class="num-val">'+fmtNum(s.g)+'</span></span>';
-    if(s.ad) nums+='<span>广告 <span class="num-val">'+fmtNum(s.ad)+'</span></span>';
-    if(s.ca) nums+='<span>现金 <span class="num-val">'+fmtNum(s.ca)+'</span></span>';
-    if(!nums) nums='<span style="color:#3a4a58">无经营数据</span>';
-    
-    html+='<div class="store-card '+pClass+'">'+
-      '<div class="sc-top"><span class="sc-name">'+esc(s.n)+'</span><span class="sc-score '+sClass+'">'+s.s+'分</span></div>'+
-      '<div class="sc-meta"><span>'+s.c+'</span><span>'+s.cat+'</span><span style="color:#3a4a58;font-size:10px">PID:'+s.pid.slice(-6)+'</span></div>'+
-      '<div class="sc-tags">'+tags+'</div>'+
-      '<div class="sc-nums">'+nums+'</div>'+
-    '</div>';
+    if(s.g)nums+='<span>GMV <span class="nv">'+fmtN(s.g)+'</span></span>';
+    if(s.ad)nums+='<span>广告 <span class="nv">'+fmtN(s.ad)+'</span></span>';
+    if(s.ca)nums+='<span>现金 <span class="nv">'+fmtN(s.ca)+'</span></span>';
+    if(!nums)nums='<span style="color:#3a4a58">无经营数据</span>';
+    h+='<div class="store-card '+pc+'"><div class="sc-top"><span class="sc-name">'+esc(s.n)+'</span><span class="sc-score '+sc+'">'+s.s+'分</span></div>'+
+      '<div class="sc-meta"><span>'+s.c+'</span><span>'+s.cat+'</span></div><div class="sc-tags">'+tags+'</div><div class="sc-nums">'+nums+'</div></div>';
   });
-  
-  if(list.length>200) html+='<div class="empty-msg">显示前200条，请使用筛选缩小范围</div>';
-  document.getElementById('storeList').innerHTML=html;
+  if(list.length>200)h+='<div class="empty-msg">显示前200条，请筛选缩小范围</div>';
+  document.getElementById('storeList').innerHTML=h;
 }
-
-function fmtNum(n){
-  if(n>=10000)return(n/10000).toFixed(1)+'万';
-  if(n>=1000)return(n/1000).toFixed(1)+'K';
-  return String(Math.round(n));
-}
+function fmtN(n){if(n>=10000)return(n/10000).toFixed(1)+'万';if(n>=1000)return(n/1000).toFixed(1)+'K';return String(Math.round(n))}
 function esc(s){return(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-// Auto-login
-(function(){
-  var saved=localStorage.getItem('login_code');
-  if(saved&&INDEX){
-    var found=INDEX.providers.find(p=>p.code===saved);
-    if(found){PROV=found;loadProvider();return}
-  }
-  // Wait for index to load
-  var check=setInterval(function(){
-    if(INDEX&&saved){
-      clearInterval(check);
-      var found=INDEX.providers.find(p=>p.code===saved);
-      if(found){PROV=found;loadProvider()}
+// === Heatmap tab ===
+function loadHeatmap(){
+  fetch('data/heatmap.json').then(r=>r.json()).then(d=>{HM=d;renderHeatmap()}).catch(e=>console.error(e));
+}
+function renderHeatmap(){
+  if(!HM)return;
+  // Region tabs
+  var rh='<button class="hm-region-tab '+(HM_REGION==='all'?'active':'')+'" onclick="setHMRegion(\'all\')">全部 '+HM.cities.length+'城</button>';
+  HM.regions.forEach(r=>{
+    var cnt=HM.cities.filter(c=>c.region===r).length;
+    rh+='<button class="hm-region-tab '+(HM_REGION===r?'active':'')+'" onclick="setHMRegion(\''+r+'\')">'+r+' '+cnt+'城</button>';
+  });
+  document.getElementById('hmRegionTabs').innerHTML=rh;
+  
+  var cities=HM_REGION==='all'?HM.cities:HM.cities.filter(c=>c.region===HM_REGION);
+  var cats=HM.cats;
+  
+  // KPIs
+  var totalAvail=0,totalRel=0;
+  cities.forEach(c=>{totalAvail+=c.avail;totalRel+=c.rel30});
+  document.getElementById('hmKpis').innerHTML=
+    '<div class="kpi-card"><div class="kpi-v">'+cities.length+'</div><div class="kpi-l">城市</div></div>'+
+    '<div class="kpi-card green"><div class="kpi-v">'+totalAvail+'</div><div class="kpi-l">空白槽位</div></div>'+
+    '<div class="kpi-card orange"><div class="kpi-v">'+totalRel+'</div><div class="kpi-l">30天内释放</div></div>'+
+    '<div class="kpi-card"><div class="kpi-v">'+cats.length+'</div><div class="kpi-l">核心类目</div></div>';
+  
+  // Build table
+  var h='<table class="hm"><thead><tr><th class="hc">城市</th>';
+  var lastG='',gBoundary=[];
+  cats.forEach((cat,i)=>{
+    if(cat.group!==lastG&&lastG!==''){gBoundary.push(i)}
+    lastG=cat.group;
+  });
+  cats.forEach((cat,i)=>{
+    if(gBoundary.includes(i))h+='<th class="gsep"></th>';
+    h+='<th title="'+cat.label+'">'+cat.label+'</th>';
+  });
+  h+='<th style="color:#66ffaa">可抢</th><th style="color:#ffaa44">30天</th></tr></thead><tbody>';
+  
+  var lastR='';
+  cities.forEach(city=>{
+    if(city.region!==lastR){
+      h+='<tr class="rsep"><td class="rlbl" colspan="'+(cats.length+3+gBoundary.length)+'">▎'+city.region+'</td></tr>';
+      lastR=city.region;
     }
-  },200);
-})();
+    var cityLabel=city.city;
+    if(city.lc)cityLabel+='<span class="lc-hint">'+city.lc+'</span>';
+    h+='<tr><td class="cc">'+cityLabel+'</td>';
+    cats.forEach((cat,i)=>{
+      if(gBoundary.includes(i))h+='<td class="gsep"></td>';
+      var occ=city.occ[cat.id];
+      if(!occ){h+='<td class="avail"></td>'}
+      else if(occ.d<0){h+='<td class="free">✓</td>'}
+      else if(occ.d<=30){h+='<td class="soon" title="'+occ.ds+'可抢">'+occ.ds+'</td>'}
+      else if(occ.d<=90){h+='<td class="mid" title="'+occ.ds+'">'+occ.ds+'</td>'}
+      else{h+='<td class="far" title="'+occ.ds+'">'+occ.ds+'</td>'}
+    });
+    h+='<td class="sa">'+city.avail+'</td>';
+    h+='<td class="sr">'+(city.rel30>0?city.rel30:'-')+'</td></tr>';
+  });
+  h+='</tbody></table>';
+  document.getElementById('hmWrap').innerHTML=h;
+}
+function setHMRegion(r){HM_REGION=r;renderHeatmap()}
 
-// Enter key login
+// Auto-login retry
+var _ac=setInterval(function(){if(INDEX){clearInterval(_ac);tryAutoLogin()}},300);
 document.getElementById('codeInput').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin()});
 </script>
 </body></html>
