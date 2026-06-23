@@ -90,16 +90,33 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 .lc-h{font-size:8px;color:#3a4a58;display:block;margin-top:1px}
 
 .loading{text-align:center;padding:60px 20px;color:#5a6a88;font-size:13px}
+
+/* Wordpacks */
+.wp-search-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.wp-card{background:#111b2e;border:1px solid rgba(77,216,255,0.06);border-radius:10px;padding:14px;margin-bottom:10px}
+.wp-cat-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:2px}
+.wp-cat-meta{font-size:11px;color:#5a6a88;margin-bottom:8px}
+.wp-words{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.wp-word{padding:3px 8px;background:rgba(77,216,255,0.08);border:1px solid rgba(77,216,255,0.12);border-radius:6px;font-size:11px;color:#8ab4d0}
+.wp-word.match{background:rgba(255,170,68,0.15);border-color:rgba(255,170,68,0.3);color:#ffaa44;font-weight:600}
+.wp-price-row{display:flex;align-items:center;gap:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.04)}
+.wp-price{font-size:20px;font-weight:800;color:#4dd8ff}
+.wp-price-label{font-size:11px;color:#5a6a88}
+.wp-price-city{font-size:12px;color:#8a9ab0;font-weight:500}
+.wp-dist{font-size:11px;color:#5a6a88;margin-left:auto}
+.wp-products{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.wp-prod{padding:1px 5px;background:rgba(255,255,255,0.03);border-radius:4px;font-size:9px;color:#3a4a58}
 </style></head><body>
 
 <div class="hdr">
   <h1>商机 <em>筛选助手</em></h1>
-  <div class="sub">门店商机 + 城市类目抢占地图</div>
+  <div class="sub">门店商机 + 抢占地图 + 词包价格查询</div>
 </div>
 
 <div class="main-tabs">
   <button class="main-tab active" onclick="switchTab('stores',this)">门店商机</button>
   <button class="main-tab" onclick="switchTab('heatmap',this)">抢占地图</button>
+  <button class="main-tab" onclick="switchTab('wordpacks',this)">词包价格</button>
 </div>
 
 <!-- Stores tab -->
@@ -125,6 +142,17 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
   <div class="hm-wrap" id="hmWrap"><div class="loading">点击"抢占地图"加载数据...</div></div>
 </div>
 
+<!-- Wordpacks tab -->
+<div id="tabWordpacks" class="tab-content">
+  <div class="wp-search-row">
+    <input class="search-input" id="wpSearch" placeholder="搜索类目或关键词（如：火锅、烧烤、粤菜）..." oninput="renderWP()">
+    <select class="filter-sel" id="wpCity" onchange="renderWP()" style="min-width:120px"><option value="">全部城市</option></select>
+    <select class="filter-sel" id="wpIndustry" onchange="renderWP()"><option value="">全部行业</option></select>
+  </div>
+  <div class="count-bar" id="wpCount"></div>
+  <div id="wpList"><div class="loading">点击"词包价格"加载数据...</div></div>
+</div>
+
 <script>
 var ALL_STORES=null,HM=null,HM_R='all';
 var F={prov:'',city:'',cat:'',l1:'',q:''},SORT='score';
@@ -141,9 +169,14 @@ function switchTab(tab,el){
   el.classList.add('active');
   document.getElementById('tabStores').classList.toggle('active',tab==='stores');
   document.getElementById('tabHeatmap').classList.toggle('active',tab==='heatmap');
+  document.getElementById('tabWordpacks').classList.toggle('active',tab==='wordpacks');
   if(tab==='heatmap'&&!HM){
     document.getElementById('hmWrap').innerHTML='<div class="loading">加载中...</div>';
     fetch('data/heatmap.json').then(r=>r.json()).then(d=>{HM=d;renderHM()}).catch(e=>console.error(e));
+  }
+  if(tab==='wordpacks'&&!WP){
+    document.getElementById('wpList').innerHTML='<div class="loading">加载中...</div>';
+    fetch('data/wordpacks.json').then(r=>r.json()).then(d=>{WP=d;initWP()}).catch(e=>console.error(e));
   }
 }
 
@@ -293,5 +326,103 @@ function renderHM(){
   document.getElementById('hmWrap').innerHTML=h;
 }
 function setHMR(r){HM_R=r;renderHM()}
+
+// === Wordpacks ===
+var WP=null;
+function initWP(){
+  if(!WP)return;
+  // Populate city dropdown
+  var citySel=document.getElementById('wpCity');
+  var h='<option value="">全部城市</option>';
+  WP.cities.forEach(c=>{h+='<option>'+c+'</option>'});
+  citySel.innerHTML=h;
+  // Populate industry dropdown
+  var industries=[...new Set(WP.cats.map(c=>c.ind))].filter(x=>x&&x!=='nan').sort();
+  var indSel=document.getElementById('wpIndustry');
+  h='<option value="">全部行业</option>';
+  industries.forEach(i=>{h+='<option>'+esc(i)+'</option>'});
+  indSel.innerHTML=h;
+  renderWP();
+}
+function renderWP(){
+  if(!WP)return;
+  var q=(document.getElementById('wpSearch').value||'').toLowerCase().trim();
+  var city=document.getElementById('wpCity').value;
+  var ind=document.getElementById('wpIndustry').value;
+  
+  var list=WP.cats.slice();
+  if(ind)list=list.filter(c=>c.ind===ind);
+  if(q){
+    list=list.filter(c=>{
+      if(c.short.toLowerCase().includes(q))return true;
+      if(c.cat.toLowerCase().includes(q))return true;
+      return c.words.some(w=>w.toLowerCase().includes(q));
+    });
+  }
+  // Sort: matched keyword first if searching
+  if(q){
+    list.sort((a,b)=>{
+      var aMatch=a.words.some(w=>w.toLowerCase().includes(q))?0:1;
+      var bMatch=b.words.some(w=>w.toLowerCase().includes(q))?0:1;
+      return aMatch-bMatch||a.short.localeCompare(b.short);
+    });
+  }
+  
+  document.getElementById('wpCount').textContent='共 '+list.length+' 个类目';
+  if(!list.length){document.getElementById('wpList').innerHTML='<div class="empty-msg">无匹配类目</div>';return}
+  
+  var show=list.slice(0,50),h='';
+  show.forEach(c=>{
+    var price=city?c.prices[city]:null;
+    var priceRange='';
+    if(!city){
+      var prices=Object.values(c.prices);
+      if(prices.length){
+        var mn=Math.min(...prices),mx=Math.max(...prices);
+        priceRange=mn===mx?'¥'+mn.toLocaleString():'¥'+mn.toLocaleString()+' ~ ¥'+mx.toLocaleString();
+      }
+    }
+    
+    // Highlight matching words
+    var wordHtml=c.words.map(w=>{
+      var isMatch=q&&w.toLowerCase().includes(q);
+      return '<span class="wp-word'+(isMatch?' match':'')+'">'+esc(w)+'</span>';
+    }).join('');
+    if(c.wordCount===0)wordHtml='<span style="color:#3a4a58;font-size:11px">无词包</span>';
+    
+    // Products
+    var prodHtml='';
+    if(c.prod&&c.prod.length&&c.prod[0]){
+      prodHtml='<div class="wp-products">';
+      c.prod.forEach(p=>{
+        var label=p.replace('ADVERT_','');
+        prodHtml+='<span class="wp-prod">'+label+'</span>';
+      });
+      prodHtml+='</div>';
+    }
+    
+    h+='<div class="wp-card">';
+    h+='<div class="wp-cat-name">'+esc(c.short)+'</div>';
+    h+='<div class="wp-cat-meta">'+esc(c.cat)+' · '+c.wc+'个关键词'+(c.dist?' · 置顶距离'+c.dist+'km':'')+'</div>';
+    h+='<div class="wp-words">'+wordHtml+'</div>';
+    h+='<div class="wp-price-row">';
+    if(city&&price!==null&&price!==undefined){
+      h+='<span class="wp-price">¥'+price.toLocaleString()+'</span>';
+      h+='<span class="wp-price-city">'+esc(city)+'</span>';
+    }else if(priceRange){
+      h+='<span class="wp-price">'+priceRange+'</span>';
+      h+='<span class="wp-price-label">全城市价格区间</span>';
+    }else{
+      h+='<span class="wp-price" style="color:#5a6a88">暂无报价</span>';
+    }
+    if(c.dist)h+='<span class="wp-dist">最大置顶 '+c.dist+'km</span>';
+    h+='</div>';
+    h+=prodHtml;
+    h+='</div>';
+  });
+  
+  if(list.length>50)h+='<div class="empty-msg">显示前50个，请搜索缩小范围</div>';
+  document.getElementById('wpList').innerHTML=h;
+}
 </script>
 </body></html>
