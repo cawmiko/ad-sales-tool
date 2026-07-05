@@ -110,12 +110,13 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 
 <div class="hdr">
   <h1>商机 <em>筛选助手</em></h1>
-  <div class="sub">门店商机 + 顶展抢占地图 + 词包价格查询</div>
+  <div class="sub">门店商机 + 顶展抢占地图 + 钻展抢占地图 + 词包价格查询</div>
 </div>
 
 <div class="main-tabs">
   <button class="main-tab active" onclick="switchTab('stores',this)">门店商机</button>
   <button class="main-tab" onclick="switchTab('heatmap',this)">顶展抢占地图</button>
+  <button class="main-tab" onclick="switchTab('zuanzhan',this)">钻展抢占地图</button>
   <button class="main-tab" onclick="switchTab('wordpacks',this)">词包价格</button>
 </div>
 
@@ -142,6 +143,21 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
   <div class="hm-wrap" id="hmWrap"><div class="loading">点击"顶展抢占地图"加载数据...</div></div>
 </div>
 
+<!-- Zuanzhan Heatmap tab -->
+<div id="tabZuanzhan" class="tab-content">
+  <div class="hm-legend">
+    <span style="color:#f0a030;font-weight:600;margin-right:8px">高频&钻展v1</span>
+    <span><i style="background:rgba(102,255,170,0.08)"></i>空白可抢</span>
+    <span><i style="background:rgba(102,255,170,0.15)"></i>已释放</span>
+    <span><i style="background:rgba(255,170,68,0.25)"></i>30天内</span>
+    <span><i style="background:rgba(255,107,107,0.15)"></i>30-90天</span>
+    <span><i style="background:rgba(255,80,80,0.06)"></i>90天+</span>
+  </div>
+  <div class="hm-rtabs" id="zzRTabs"></div>
+  <div class="kpi-row" id="zzKpis"></div>
+  <div class="hm-wrap" id="zzWrap"><div class="loading">点击"钻展抢占地图"加载数据...</div></div>
+</div>
+
 <!-- Wordpacks tab -->
 <div id="tabWordpacks" class="tab-content">
   <div class="wp-search-row">
@@ -156,7 +172,7 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 </div>
 
 <script>
-var ALL_STORES=null,HM=null,HM_R='all';
+var ALL_STORES=null,HM=null,HM_R='all',ZZ=null,ZZ_R='all';
 var F={prov:'',city:'',cat:'',l1:'',q:''},SORT='score';
 
 // Load stores
@@ -171,10 +187,15 @@ function switchTab(tab,el){
   el.classList.add('active');
   document.getElementById('tabStores').classList.toggle('active',tab==='stores');
   document.getElementById('tabHeatmap').classList.toggle('active',tab==='heatmap');
+  document.getElementById('tabZuanzhan').classList.toggle('active',tab==='zuanzhan');
   document.getElementById('tabWordpacks').classList.toggle('active',tab==='wordpacks');
   if(tab==='heatmap'&&!HM){
     document.getElementById('hmWrap').innerHTML='<div class="loading">加载中...</div>';
     fetch('data/heatmap.json').then(r=>r.json()).then(d=>{HM=d;renderHM()}).catch(e=>console.error(e));
+  }
+  if(tab==='zuanzhan'&&!ZZ){
+    document.getElementById('zzWrap').innerHTML='<div class="loading">加载中...</div>';
+    fetch('data/zuanzhan-heatmap.json').then(r=>r.json()).then(d=>{ZZ=d;renderZZ()}).catch(e=>console.error(e));
   }
   if(tab==='wordpacks'&&!WP){
     document.getElementById('wpList').innerHTML='<div class="loading">加载中...</div>';
@@ -328,6 +349,57 @@ function renderHM(){
   document.getElementById('hmWrap').innerHTML=h;
 }
 function setHMR(r){HM_R=r;renderHM()}
+
+// === Zuanzhan Heatmap ===
+var ZZ=null, ZZ_R='all';
+function renderZZ(){
+  if(!ZZ)return;
+  var rh='<button class="hm-rtab '+(ZZ_R==='all'?'active':'')+'" onclick="setZZR(\'all\')">全部 '+ZZ.cities.length+'城</button>';
+  ZZ.regions.forEach(r=>{
+    var cnt=ZZ.cities.filter(c=>c.region===r).length;
+    rh+='<button class="hm-rtab '+(ZZ_R===r?'active':'')+'" onclick="setZZR(\''+r+'\')">'+r+' '+cnt+'</button>';
+  });
+  document.getElementById('zzRTabs').innerHTML=rh;
+  
+  var cities=ZZ_R==='all'?ZZ.cities:ZZ.cities.filter(c=>c.region===ZZ_R);
+  var cats=ZZ.cats;
+  var tA=0,tR=0;
+  cities.forEach(c=>{tA+=c.avail;tR+=c.rel30});
+  document.getElementById('zzKpis').innerHTML=
+    '<div class="kpi-card"><div class="kpi-v">'+cities.length+'</div><div class="kpi-l">城市</div></div>'+
+    '<div class="kpi-card green"><div class="kpi-v">'+tA+'</div><div class="kpi-l">空白槽位</div></div>'+
+    '<div class="kpi-card orange"><div class="kpi-v">'+tR+'</div><div class="kpi-l">30天内释放</div></div>'+
+    '<div class="kpi-card"><div class="kpi-v">'+cats.length+'</div><div class="kpi-l">关注类目</div></div>';
+  
+  // Group boundaries for group separators
+  var gb=[];var lg='';
+  cats.forEach((c,i)=>{if(c.group!==lg&&lg!=='')gb.push(i);lg=c.group});
+  var nc=cats.length+3+gb.length;
+  
+  var h='<table class="hm"><thead><tr><th class="hc">城市</th>';
+  cats.forEach((c,i)=>{if(gb.includes(i))h+='<th class="gs"></th>';h+='<th title="'+c.label+'">'+c.label+'</th>'});
+  h+='<th style="color:#66ffaa">可抢</th><th style="color:#ffaa44">30天</th></tr></thead><tbody>';
+  
+  var lr='';
+  cities.forEach(city=>{
+    if(city.region!==lr){h+='<tr class="rsep"><td class="rl" colspan="'+nc+'">▎'+city.region+'</td></tr>';lr=city.region}
+    var cl=city.city;if(city.lc)cl+='<span class="lc-h">'+city.lc+'</span>';
+    h+='<tr><td class="cc">'+cl+'</td>';
+    cats.forEach((cat,i)=>{
+      if(gb.includes(i))h+='<td class="gs"></td>';
+      var occ=city.occ[cat.id];
+      if(!occ)h+='<td class="av" title="'+city.city+'·'+cat.label+' 空白可抢">+</td>';
+      else if(occ.d<0)h+='<td class="fr" title="已释放">✓</td>';
+      else if(occ.d<=30)h+='<td class="so" title="'+occ.ds+'释放">'+occ.ds+'</td>';
+      else if(occ.d<=90)h+='<td class="md" title="'+occ.ds+'">'+occ.ds+'</td>';
+      else h+='<td class="fa" title="'+occ.ds+'">'+occ.ds+'</td>';
+    });
+    h+='<td class="sa">'+city.avail+'</td><td class="sr">'+(city.rel30>0?city.rel30:'-')+'</td></tr>';
+  });
+  h+='</tbody></table>';
+  document.getElementById('zzWrap').innerHTML=h;
+}
+function setZZR(r){ZZ_R=r;renderZZ()}
 
 // === Wordpacks ===
 var WP=null, WP_CITY='', WP_DIST='';
