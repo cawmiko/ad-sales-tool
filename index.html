@@ -22,17 +22,15 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .kpi-card.green .kpi-v{color:#66ffaa}
 .kpi-card.orange .kpi-v{color:#ffaa44}
 .kpi-card.red .kpi-v{color:#ff6b6b}
-.filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
-.count-bar{font-size:11px;color:#5a6a88;margin-bottom:8px}
 .empty-msg{text-align:center;padding:40px 20px;color:#5a6a88;font-size:13px}
 
 /* Heatmap */
 .hm-legend{display:flex;gap:10px;padding:6px 0;font-size:11px;color:#5a6a88;flex-wrap:wrap;margin-bottom:8px}
 .hm-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:3px;vertical-align:middle}
 
-/* Filter bar */
-.hm-fbar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-start}
-.hm-fbox{flex:1;min-width:180px;position:relative}
+/* Filter bar - input + autocomplete for both city and category */
+.hm-fbar{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.hm-fbox{flex:1;min-width:160px;position:relative}
 .hm-fbox-label{font-size:11px;color:#5a6a88;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px}
 .hm-fbox-label .act{font-size:10px;color:#4dd8ff;cursor:pointer;padding:1px 6px;border:1px solid rgba(77,216,255,0.2);border-radius:3px;background:transparent}
 .hm-fbox-label .act:hover{background:rgba(77,216,255,0.08)}
@@ -49,11 +47,6 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .hm-tag{padding:3px 8px;background:rgba(77,216,255,0.1);border:1px solid rgba(77,216,255,0.2);border-radius:5px;font-size:11px;color:#4dd8ff;display:flex;align-items:center;gap:4px}
 .hm-tag .tx{cursor:pointer;font-size:9px;opacity:0.6;font-weight:700}
 .hm-tag .tx:hover{opacity:1}
-.hm-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.hm-chip{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid rgba(77,216,255,0.12);background:rgba(255,255,255,0.02);color:#5a6a88;transition:all .15s;user-select:none}
-.hm-chip:hover{border-color:rgba(77,216,255,0.3);color:#8a9ab0}
-.hm-chip.on{background:rgba(77,216,255,0.12);border-color:rgba(77,216,255,0.35);color:#4dd8ff;font-weight:600}
-.hm-chip .cx{margin-left:3px;font-size:9px;opacity:0.5}
 
 .hm-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table.hm{border-collapse:separate;border-spacing:1px;font-size:11px;width:100%}
@@ -97,8 +90,6 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 
 <!-- Biz tab -->
 <div id="tabBiz" class="tab-content active">
-  <div class="filter-row" id="bizFilterRow"></div>
-  <div class="count-bar" id="bizCount"></div>
   <div id="bizList">
     <div class="empty-msg" style="text-align:center;padding:60px 20px;color:#5a6a88">
       <div style="font-size:36px;margin-bottom:12px">📋</div>
@@ -180,8 +171,6 @@ function renderBizContext(product){
   h+='<div class="biz-ctx-item"><span class="biz-ctx-label">类目</span><span class="biz-ctx-value">'+esc(BIZ.cat)+'</span></div>';
   h+='<div class="biz-ctx-item"><span class="biz-ctx-label">状态</span><span class="biz-ctx-value" style="color:#66ffaa">空白可抢</span></div>';
   h+='</div><div class="biz-ctx-placeholder">商机明细数据待更新，届时将展示该城市+类目下的具体商户商机</div></div>';
-  document.getElementById('bizFilterRow').innerHTML='';
-  document.getElementById('bizCount').textContent='';
   document.getElementById('bizList').innerHTML=h;
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
@@ -198,97 +187,101 @@ function initZZ(){
   renderFilter('zz',ZZ,'钻展');renderMatrix('zz',ZZ,'钻展');
 }
 
-// === Filter UI: input + tags for city, chips for cat ===
+// === Filter UI: both city and category are input + autocomplete ===
 function renderFilter(prefix,data,product){
   var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
   var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
   var el=document.getElementById(prefix+'Filter');
   var h='<div class="hm-fbar">';
-  // City input box
+  // City input
   h+='<div class="hm-fbox">';
-  h+='<div class="hm-fbox-label">城市 <button class="act" onclick="addAllCity(\''+prefix+'\')">全选</button><button class="act" onclick="clearCity(\''+prefix+'\')">清空</button></div>';
-  h+='<input class="hm-finput" id="cityInput-'+prefix+'" placeholder="输入城市名搜索..." oninput="onCityInput(\''+prefix+'\')" onfocus="onCityInput(\''+prefix+'\')">';
+  h+='<div class="hm-fbox-label">城市 <button class="act" onclick="addAll(\''+prefix+'\',\'city\')">全选</button><button class="act" onclick="clearAll(\''+prefix+'\',\'city\')">清空</button></div>';
+  h+='<input class="hm-finput" id="cityInput-'+prefix+'" placeholder="输入城市名..." oninput="onInput(\''+prefix+'\',\'city\')" onfocus="onInput(\''+prefix+'\',\'city\')">';
   h+='<div class="hm-suggest" id="citySug-'+prefix+'"></div>';
-  // Selected city tags
   if(sel.size>0){
     h+='<div class="hm-tags">';
-    data.cities.forEach(function(c){
-      if(sel.has(c.city))h+='<span class="hm-tag">'+esc(c.city)+'<span class="tx" onclick="removeCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\')">✕</span></span>';
-    });
+    data.cities.forEach(function(c){if(sel.has(c.city))h+='<span class="hm-tag">'+esc(c.city)+'<span class="tx" onclick="removeItem(\''+prefix+'\',\'city\',\''+c.city.replace(/'/g,"\\'")+'\')">✕</span></span>'});
     h+='</div>';
   }
   h+='</div>';
-  // Category chips
-  h+='<div class="hm-fbox" style="min-width:260px">';
-  h+='<div class="hm-fbox-label">类目 <button class="act" onclick="addAllCat(\''+prefix+'\')">全选</button><button class="act" onclick="clearCat(\''+prefix+'\')">清空</button></div>';
-  h+='<div class="hm-chips">';
-  data.cats.forEach(function(c){
-    var on=csel.has(c.id);
-    h+='<span class="hm-chip'+(on?' on':'')+'" onclick="toggleCat(\''+prefix+'\',\''+c.id+'\')">'+esc(c.label)+(on?'<span class="cx">✕</span>':'')+'</span>';
-  });
-  h+='</div></div>';
+  // Category input
+  h+='<div class="hm-fbox">';
+  h+='<div class="hm-fbox-label">类目 <button class="act" onclick="addAll(\''+prefix+'\',\'cat\')">全选</button><button class="act" onclick="clearAll(\''+prefix+'\',\'cat\')">清空</button></div>';
+  h+='<input class="hm-finput" id="catInput-'+prefix+'" placeholder="输入类目名..." oninput="onInput(\''+prefix+'\',\'cat\')" onfocus="onInput(\''+prefix+'\',\'cat\')">';
+  h+='<div class="hm-suggest" id="catSug-'+prefix+'"></div>';
+  if(csel.size>0){
+    h+='<div class="hm-tags">';
+    data.cats.forEach(function(c){if(csel.has(c.id))h+='<span class="hm-tag">'+esc(c.label)+'<span class="tx" onclick="removeItem(\''+prefix+'\',\'cat\',\''+c.id+'\')">✕</span></span>'});
+    h+='</div>';
+  }
+  h+='</div>';
   h+='</div>';
   el.innerHTML=h;
 }
 
-function onCityInput(prefix){
-  var input=document.getElementById('cityInput-'+prefix);
-  var sug=document.getElementById('citySug-'+prefix);
+function onInput(prefix,type){
+  var inputId=type==='city'?'cityInput-'+prefix:'catInput-'+prefix;
+  var sugId=type==='city'?'citySug-'+prefix:'catSug-'+prefix;
+  var input=document.getElementById(inputId);
+  var sug=document.getElementById(sugId);
   var q=(input.value||'').trim().toLowerCase();
-  var data=prefix==='hm'?HM:ZZ;
-  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
   if(!q){sug.classList.remove('show');return}
-  var matches=data.cities.filter(function(c){
-    return c.city.toLowerCase().indexOf(q)>=0 && !sel.has(c.city);
-  }).slice(0,20);
-  if(!matches.length){sug.classList.remove('show');return}
+  var data=prefix==='hm'?HM:ZZ;
+  var items,selected;
+  if(type==='city'){
+    selected=prefix==='hm'?HM_SEL:ZZ_SEL;
+    items=data.cities.filter(function(c){return c.city.toLowerCase().indexOf(q)>=0&&!selected.has(c.city)}).slice(0,20);
+  }else{
+    selected=prefix==='hm'?HM_CSEL:ZZ_CSEL;
+    items=data.cats.filter(function(c){return c.label.toLowerCase().indexOf(q)>=0&&!selected.has(c.id)}).slice(0,20);
+  }
+  if(!items.length){sug.classList.remove('show');return}
   var h='';
-  matches.forEach(function(c,i){
-    h+='<div class="hm-sug-item'+(i===matches.length-1?' last':'')+'" onclick="addCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\')">'+esc(c.city)+'</div>';
+  items.forEach(function(c,i){
+    var name=type==='city'?c.city:c.label;
+    var val=type==='city'?c.city.replace(/'/g,"\\'"):c.id;
+    h+='<div class="hm-sug-item'+(i===items.length-1?' last':'')+'" onclick="addItem(\''+prefix+'\',\''+type+'\',\''+val.replace(/'/g,"\\'")+'\')">'+esc(name)+'</div>';
   });
   sug.innerHTML=h;sug.classList.add('show');
 }
 
-function addCity(prefix,city){
-  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
-  sel.add(city);
+function addItem(prefix,type,val){
+  if(type==='city'){
+    (prefix==='hm'?HM_SEL:ZZ_SEL).add(val);
+  }else{
+    (prefix==='hm'?HM_CSEL:ZZ_CSEL).add(val);
+  }
   var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
   renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
-  var input=document.getElementById('cityInput-'+prefix);if(input)input.value='';
-  var sug=document.getElementById('citySug-'+prefix);if(sug)sug.classList.remove('show');
+  var inputId=type==='city'?'cityInput-'+prefix:'catInput-'+prefix;
+  var input=document.getElementById(inputId);if(input)input.value='';
+  var sugId=type==='city'?'citySug-'+prefix:'catSug-'+prefix;
+  var sug=document.getElementById(sugId);if(sug)sug.classList.remove('show');
 }
-function removeCity(prefix,city){
-  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
-  sel.delete(city);
+function removeItem(prefix,type,val){
+  if(type==='city'){
+    (prefix==='hm'?HM_SEL:ZZ_SEL).delete(val);
+  }else{
+    (prefix==='hm'?HM_CSEL:ZZ_CSEL).delete(val);
+  }
   var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
   renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
 }
-function addAllCity(prefix){
-  var data=prefix==='hm'?HM:ZZ;var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
-  data.cities.forEach(function(c){sel.add(c.city)});
+function addAll(prefix,type){
+  var data=prefix==='hm'?HM:ZZ;
+  if(type==='city'){
+    var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+    data.cities.forEach(function(c){sel.add(c.city)});
+  }else{
+    var sel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
+    data.cats.forEach(function(c){sel.add(c.id)});
+  }
   var p=prefix==='hm'?'顶展':'钻展';
   renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
 }
-function clearCity(prefix){
-  (prefix==='hm'?HM_SEL:ZZ_SEL).clear();
-  var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
-  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
-}
-
-function toggleCat(prefix,catId){
-  var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
-  if(csel.has(catId))csel.delete(catId);else csel.add(catId);
-  var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
-  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
-}
-function addAllCat(prefix){
-  var data=prefix==='hm'?HM:ZZ;var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
-  data.cats.forEach(function(c){csel.add(c.id)});
-  var p=prefix==='hm'?'顶展':'钻展';
-  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
-}
-function clearCat(prefix){
-  (prefix==='hm'?HM_CSEL:ZZ_CSEL).clear();
+function clearAll(prefix,type){
+  if(type==='city')(prefix==='hm'?HM_SEL:ZZ_SEL).clear();
+  else(prefix==='hm'?HM_CSEL:ZZ_CSEL).clear();
   var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
   renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
 }
@@ -303,7 +296,7 @@ function renderMatrix(prefix,data,product){
   var cats=data.cats.filter(function(c){return csel.has(c.id)});
   if(!cities.length||!cats.length){
     document.getElementById(kpiId).innerHTML='';
-    document.getElementById(wrapId).innerHTML='<div class="empty-msg">请选择至少1个城市和1个类目</div>';
+    document.getElementById(wrapId).innerHTML='<div class="empty-msg">请输入城市和类目进行筛选</div>';
     return;
   }
   var tA=0,tR=0;
