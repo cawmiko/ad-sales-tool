@@ -30,28 +30,26 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .hm-legend{display:flex;gap:10px;padding:6px 0;font-size:11px;color:#5a6a88;flex-wrap:wrap;margin-bottom:8px}
 .hm-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:3px;vertical-align:middle}
 
-/* Dropdown multi-select */
-.hm-dd-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;position:relative}
-.hm-dd-trigger{flex:1;min-width:140px;padding:8px 12px;background:#111b2e;border:1px solid rgba(77,216,255,0.15);border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;color:#8a9ab0;position:relative;transition:border-color .15s}
-.hm-dd-trigger:hover,.hm-dd-trigger.open{border-color:#4dd8ff}
-.hm-dd-trigger .dd-label{font-weight:600;color:#5a7a9a;white-space:nowrap;flex-shrink:0}
-.hm-dd-trigger .dd-tags{display:flex;flex-wrap:wrap;gap:3px;flex:1;overflow:hidden;max-height:22px}
-.hm-dd-trigger .dd-tag{padding:1px 6px;background:rgba(77,216,255,0.1);border:1px solid rgba(77,216,255,0.2);border-radius:4px;font-size:10px;color:#4dd8ff;white-space:nowrap;display:flex;align-items:center;gap:3px}
-.hm-dd-trigger .dd-tag .tx{cursor:pointer;font-size:8px;opacity:0.6;font-weight:700}
-.hm-dd-trigger .dd-tag .tx:hover{opacity:1}
-.hm-dd-trigger .dd-count{font-size:10px;color:#5a6a88;white-space:nowrap;flex-shrink:0}
-.hm-dd-trigger .dd-arrow{font-size:10px;color:#5a6a88;flex-shrink:0;transition:transform .2s}
-.hm-dd-trigger.open .dd-arrow{transform:rotate(180deg)}
-.hm-dd-panel{display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:#151f30;border:1px solid rgba(77,216,255,0.2);border-radius:8px;padding:10px;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4);max-height:260px;overflow-y:auto}
-.hm-dd-panel.show{display:block}
-.hm-dd-panel::-webkit-scrollbar{width:4px}
-.hm-dd-panel::-webkit-scrollbar-thumb{background:rgba(77,216,255,0.15);border-radius:2px}
-.hm-dd-search{width:100%;padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:6px;background:rgba(255,255,255,0.03);color:#d0d8e8;font-size:12px;outline:none;margin-bottom:6px}
-.hm-dd-search:focus{border-color:#4dd8ff}
-.hm-dd-acts{display:flex;gap:6px;margin-bottom:6px}
-.hm-dd-acts button{font-size:10px;color:#4dd8ff;cursor:pointer;padding:2px 8px;border:1px solid rgba(77,216,255,0.2);border-radius:4px;background:transparent}
-.hm-dd-acts button:hover{background:rgba(77,216,255,0.08)}
-.hm-dd-chips{display:flex;flex-wrap:wrap;gap:4px}
+/* Filter bar */
+.hm-fbar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-start}
+.hm-fbox{flex:1;min-width:180px;position:relative}
+.hm-fbox-label{font-size:11px;color:#5a6a88;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.hm-fbox-label .act{font-size:10px;color:#4dd8ff;cursor:pointer;padding:1px 6px;border:1px solid rgba(77,216,255,0.2);border-radius:3px;background:transparent}
+.hm-fbox-label .act:hover{background:rgba(77,216,255,0.08)}
+.hm-finput{width:100%;padding:7px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:6px;background:rgba(255,255,255,0.03);color:#d0d8e8;font-size:12px;outline:none}
+.hm-finput:focus{border-color:#4dd8ff}
+.hm-suggest{position:absolute;top:100%;left:0;right:0;z-index:50;background:#151f30;border:1px solid rgba(77,216,255,0.2);border-radius:6px;margin-top:2px;max-height:180px;overflow-y:auto;display:none;box-shadow:0 6px 18px rgba(0,0,0,0.4)}
+.hm-suggest.show{display:block}
+.hm-suggest::-webkit-scrollbar{width:4px}
+.hm-suggest::-webkit-scrollbar-thumb{background:rgba(77,216,255,0.15);border-radius:2px}
+.hm-sug-item{padding:6px 10px;font-size:12px;color:#8a9ab0;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.03)}
+.hm-sug-item:hover{background:rgba(77,216,255,0.08);color:#d0d8e8}
+.hm-sug-item.last{border:none}
+.hm-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.hm-tag{padding:3px 8px;background:rgba(77,216,255,0.1);border:1px solid rgba(77,216,255,0.2);border-radius:5px;font-size:11px;color:#4dd8ff;display:flex;align-items:center;gap:4px}
+.hm-tag .tx{cursor:pointer;font-size:9px;opacity:0.6;font-weight:700}
+.hm-tag .tx:hover{opacity:1}
+.hm-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .hm-chip{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid rgba(77,216,255,0.12);background:rgba(255,255,255,0.02);color:#5a6a88;transition:all .15s;user-select:none}
 .hm-chip:hover{border-color:rgba(77,216,255,0.3);color:#8a9ab0}
 .hm-chip.on{background:rgba(77,216,255,0.12);border-color:rgba(77,216,255,0.35);color:#4dd8ff;font-weight:600}
@@ -73,7 +71,6 @@ table.hm td.sa{color:#66ffaa;font-weight:700;text-align:center;padding:4px 6px}
 table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 .rsep td{padding:0!important;border:none!important}
 .rsep .rl{font-size:10px;color:#4dd8ff;font-weight:700;padding:10px 10px 4px;letter-spacing:2px;background:#111b2e}
-.lc-h{font-size:8px;color:#3a4a58;display:block;margin-top:1px}
 .loading{text-align:center;padding:60px 20px;color:#5a6a88;font-size:13px}
 
 /* Biz context card */
@@ -145,7 +142,6 @@ var HM=null,ZZ=null;
 var HM_SEL=new Set(),HM_CSEL=new Set();
 var ZZ_SEL=new Set(),ZZ_CSEL=new Set();
 var BIZ={city:'',cat:''};
-var OPEN_DD=null; // which dropdown is open: null, 'hm-city','hm-cat','zz-city','zz-cat'
 
 function switchTab(tab,el){
   document.querySelectorAll('.main-tab').forEach(function(t){t.classList.remove('active')});
@@ -153,22 +149,19 @@ function switchTab(tab,el){
   document.getElementById('tabBiz').classList.toggle('active',tab==='biz');
   document.getElementById('tabHeatmap').classList.toggle('active',tab==='heatmap');
   document.getElementById('tabZuanzhan').classList.toggle('active',tab==='zuanzhan');
-  closeDD();
+  closeSuggest();
   if(tab==='heatmap'&&!HM){
     document.getElementById('hmWrap').innerHTML='<div class="loading">加载中...</div>';
-    fetch('data/heatmap.json').then(function(r){return r.json()}).then(function(d){HM=d;initHM()}).catch(function(e){console.error(e)});
+    fetch('data/heatmap.json').then(function(r){return r.json()}).then(function(d){HM=d;initHM()});
   }
   if(tab==='zuanzhan'&&!ZZ){
     document.getElementById('zzWrap').innerHTML='<div class="loading">加载中...</div>';
-    fetch('data/zuanzhan-heatmap.json').then(function(r){return r.json()}).then(function(d){ZZ=d;initZZ()}).catch(function(e){console.error(e)});
+    fetch('data/zuanzhan-heatmap.json').then(function(r){return r.json()}).then(function(d){ZZ=d;initZZ()});
   }
 }
 
-// Close dropdown when clicking outside
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.hm-dd-row'))closeDD();
-});
-function closeDD(){OPEN_DD=null;document.querySelectorAll('.hm-dd-panel').forEach(function(p){p.classList.remove('show')});document.querySelectorAll('.hm-dd-trigger').forEach(function(t){t.classList.remove('open')})}
+document.addEventListener('click',function(e){if(!e.target.closest('.hm-fbox'))closeSuggest()});
+function closeSuggest(){document.querySelectorAll('.hm-suggest').forEach(function(s){s.classList.remove('show')})}
 
 // === Biz ===
 function jumpToBiz(cityName,catLabel,product){
@@ -181,164 +174,126 @@ function jumpToBiz(cityName,catLabel,product){
   renderBizContext(product);window.scrollTo(0,0);
 }
 function renderBizContext(product){
-  var h='<div class="biz-context-card">';
-  h+='<div class="biz-ctx-header"><span class="biz-ctx-icon">📍</span>来自'+product+'抢占地图</div>';
+  var h='<div class="biz-context-card"><div class="biz-ctx-header"><span class="biz-ctx-icon">📍</span>来自'+product+'抢占地图</div>';
   h+='<div class="biz-ctx-info">';
   h+='<div class="biz-ctx-item"><span class="biz-ctx-label">城市</span><span class="biz-ctx-value">'+esc(BIZ.city)+'</span></div>';
   h+='<div class="biz-ctx-item"><span class="biz-ctx-label">类目</span><span class="biz-ctx-value">'+esc(BIZ.cat)+'</span></div>';
   h+='<div class="biz-ctx-item"><span class="biz-ctx-label">状态</span><span class="biz-ctx-value" style="color:#66ffaa">空白可抢</span></div>';
-  h+='</div>';
-  h+='<div class="biz-ctx-placeholder">商机明细数据待更新，届时将展示该城市+类目下的具体商户商机</div>';
-  h+='</div>';
+  h+='</div><div class="biz-ctx-placeholder">商机明细数据待更新，届时将展示该城市+类目下的具体商户商机</div></div>';
   document.getElementById('bizFilterRow').innerHTML='';
   document.getElementById('bizCount').textContent='';
   document.getElementById('bizList').innerHTML=h;
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-// === Multi-select heatmap ===
+// === Init ===
 function initHM(){
   HM_SEL=new Set(HM.cities.map(function(c){return c.city}));
   HM_CSEL=new Set(HM.cats.map(function(c){return c.id}));
-  renderDD('hm',HM,'顶展');renderMatrix('hm',HM,'顶展');
+  renderFilter('hm',HM,'顶展');renderMatrix('hm',HM,'顶展');
 }
 function initZZ(){
   ZZ_SEL=new Set(ZZ.cities.map(function(c){return c.city}));
   ZZ_CSEL=new Set(ZZ.cats.map(function(c){return c.id}));
-  renderDD('zz',ZZ,'钻展');renderMatrix('zz',ZZ,'钻展');
+  renderFilter('zz',ZZ,'钻展');renderMatrix('zz',ZZ,'钻展');
 }
 
-function toggleDD(id,e){
-  e.stopPropagation();
-  if(OPEN_DD===id){closeDD();return}
-  closeDD();OPEN_DD=id;
-  var panel=document.getElementById('panel-'+id);
-  var trigger=document.getElementById('trigger-'+id);
-  if(panel){panel.classList.add('show');trigger.classList.add('open')}
-  var search=document.getElementById('search-'+id);
-  if(search){search.value='';search.focus()}
-}
-
-function renderDD(prefix,data,product){
-  var el=document.getElementById(prefix+'Filter');
+// === Filter UI: input + tags for city, chips for cat ===
+function renderFilter(prefix,data,product){
   var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
   var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
-  var h='<div class="hm-dd-row">';
-  // Category dropdown
-  var catId=prefix+'-cat';
-  h+='<div class="hm-dd-trigger" id="trigger-'+catId+'" onclick="toggleDD(\''+catId+'\',event)">';
-  h+='<span class="dd-label">类目</span>';
-  h+='<div class="dd-tags">';
-  if(csel.size===data.cats.length&&csel.size>0){
-    h+='<span class="dd-count">全部 '+csel.size+'</span>';
-  }else if(csel.size===0){
-    h+='<span class="dd-count" style="color:#ff6b6b">未选</span>';
-  }else{
-    var shown=0;
-    data.cats.forEach(function(c){if(csel.has(c.id)&&shown<3){h+='<span class="dd-tag">'+esc(c.label)+'<span class="tx" onclick="event.stopPropagation();toggleCat(\''+prefix+'\',\''+c.id+'\')">✕</span></span>';shown++}});
-    if(csel.size>3)h+='<span class="dd-count">+'+(csel.size-3)+'</span>';
-  }
-  h+='</div><span class="dd-arrow">▼</span></div>';
-  // City dropdown
-  var cityId=prefix+'-city';
-  h+='<div class="hm-dd-trigger" id="trigger-'+cityId+'" onclick="toggleDD(\''+cityId+'\',event)">';
-  h+='<span class="dd-label">城市</span>';
-  h+='<div class="dd-tags">';
-  if(sel.size===data.cities.length&&sel.size>0){
-    h+='<span class="dd-count">全部 '+sel.size+'</span>';
-  }else if(sel.size===0){
-    h+='<span class="dd-count" style="color:#ff6b6b">未选</span>';
-  }else{
-    var shown=0;
-    data.cities.forEach(function(c){if(sel.has(c.city)&&shown<3){h+='<span class="dd-tag">'+esc(c.city)+'<span class="tx" onclick="event.stopPropagation();toggleCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\')">✕</span></span>';shown++}});
-    if(sel.size>3)h+='<span class="dd-count">+'+(sel.size-3)+'</span>';
-  }
-  h+='</div><span class="dd-arrow">▼</span></div>';
-  h+='</div>';
-  el.innerHTML=h;
-  // Render dropdown panels (hidden by default)
-  renderDDPanels(prefix,data,product);
-}
-
-function renderDDPanels(prefix,data,product){
   var el=document.getElementById(prefix+'Filter');
-  // Cat panel
-  var catId=prefix+'-cat';
-  var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
-  var cp='<div class="hm-dd-panel" id="panel-'+catId+'">';
-  cp+='<div class="hm-dd-acts"><button onclick="toggleAllCat(\''+prefix+'\')">全选</button><button onclick="clearAllCat(\''+prefix+'\')">清空</button></div>';
-  cp+='<div class="hm-dd-chips" id="chips-'+catId+'">';
+  var h='<div class="hm-fbar">';
+  // City input box
+  h+='<div class="hm-fbox">';
+  h+='<div class="hm-fbox-label">城市 <button class="act" onclick="addAllCity(\''+prefix+'\')">全选</button><button class="act" onclick="clearCity(\''+prefix+'\')">清空</button></div>';
+  h+='<input class="hm-finput" id="cityInput-'+prefix+'" placeholder="输入城市名搜索..." oninput="onCityInput(\''+prefix+'\')" onfocus="onCityInput(\''+prefix+'\')">';
+  h+='<div class="hm-suggest" id="citySug-'+prefix+'"></div>';
+  // Selected city tags
+  if(sel.size>0){
+    h+='<div class="hm-tags">';
+    data.cities.forEach(function(c){
+      if(sel.has(c.city))h+='<span class="hm-tag">'+esc(c.city)+'<span class="tx" onclick="removeCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\')">✕</span></span>';
+    });
+    h+='</div>';
+  }
+  h+='</div>';
+  // Category chips
+  h+='<div class="hm-fbox" style="min-width:260px">';
+  h+='<div class="hm-fbox-label">类目 <button class="act" onclick="addAllCat(\''+prefix+'\')">全选</button><button class="act" onclick="clearCat(\''+prefix+'\')">清空</button></div>';
+  h+='<div class="hm-chips">';
   data.cats.forEach(function(c){
     var on=csel.has(c.id);
-    cp+='<span class="hm-chip'+(on?' on':'')+'" onclick="toggleCat(\''+prefix+'\',\''+c.id+'\')">'+esc(c.label)+(on?'<span class="cx">✕</span>':'')+'</span>';
+    h+='<span class="hm-chip'+(on?' on':'')+'" onclick="toggleCat(\''+prefix+'\',\''+c.id+'\')">'+esc(c.label)+(on?'<span class="cx">✕</span>':'')+'</span>';
   });
-  cp+='</div></div>';
-  // City panel
-  var cityId=prefix+'-city';
-  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
-  var pp='<div class="hm-dd-panel" id="panel-'+cityId+'">';
-  pp+='<input class="hm-dd-search" id="search-'+cityId+'" placeholder="搜索城市/菜系/大区..." oninput="filterDDCities(\''+prefix+'\',this.value)">';
-  pp+='<div class="hm-dd-acts"><button onclick="toggleAllCity(\''+prefix+'\')">全选</button><button onclick="clearAllCity(\''+prefix+'\')">清空</button></div>';
-  pp+='<div class="hm-dd-chips" id="chips-'+cityId+'">';
-  data.cities.forEach(function(c){
-    var on=sel.has(c.city);
-    var label=c.city+(c.lc?'('+c.lc+')':'');
-    pp+='<span class="hm-chip'+(on?' on':'')+'" data-city="'+esc(c.city)+'" data-lc="'+esc(c.lc||'')+'" data-region="'+esc(c.region||'')+'" onclick="toggleCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\')">'+esc(label)+(on?'<span class="cx">✕</span>':'')+'</span>';
-  });
-  pp+='</div></div>';
-  el.innerHTML+=cp+pp;
-  // Re-open if was open
-  if(OPEN_DD===catId){document.getElementById('panel-'+catId).classList.add('show');document.getElementById('trigger-'+catId).classList.add('open')}
-  if(OPEN_DD===cityId){document.getElementById('panel-'+cityId).classList.add('show');document.getElementById('trigger-'+cityId).classList.add('open')}
+  h+='</div></div>';
+  h+='</div>';
+  el.innerHTML=h;
 }
 
-function filterDDCities(prefix,val){
-  var q=val.toLowerCase();
-  var container=document.getElementById('chips-'+prefix+'-city');
-  if(!container)return;
-  container.querySelectorAll('.hm-chip').forEach(function(chip){
-    var city=(chip.getAttribute('data-city')||'').toLowerCase();
-    var lc=(chip.getAttribute('data-lc')||'').toLowerCase();
-    var region=(chip.getAttribute('data-region')||'').toLowerCase();
-    chip.style.display=(!q||city.indexOf(q)>=0||lc.indexOf(q)>=0||region.indexOf(q)>=0)?'':'none';
+function onCityInput(prefix){
+  var input=document.getElementById('cityInput-'+prefix);
+  var sug=document.getElementById('citySug-'+prefix);
+  var q=(input.value||'').trim().toLowerCase();
+  var data=prefix==='hm'?HM:ZZ;
+  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+  if(!q){sug.classList.remove('show');return}
+  var matches=data.cities.filter(function(c){
+    return c.city.toLowerCase().indexOf(q)>=0 && !sel.has(c.city);
+  }).slice(0,20);
+  if(!matches.length){sug.classList.remove('show');return}
+  var h='';
+  matches.forEach(function(c,i){
+    h+='<div class="hm-sug-item'+(i===matches.length-1?' last':'')+'" onclick="addCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\')">'+esc(c.city)+'</div>';
   });
+  sug.innerHTML=h;sug.classList.add('show');
+}
+
+function addCity(prefix,city){
+  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+  sel.add(city);
+  var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
+  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
+  var input=document.getElementById('cityInput-'+prefix);if(input)input.value='';
+  var sug=document.getElementById('citySug-'+prefix);if(sug)sug.classList.remove('show');
+}
+function removeCity(prefix,city){
+  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+  sel.delete(city);
+  var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
+  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
+}
+function addAllCity(prefix){
+  var data=prefix==='hm'?HM:ZZ;var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+  data.cities.forEach(function(c){sel.add(c.city)});
+  var p=prefix==='hm'?'顶展':'钻展';
+  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
+}
+function clearCity(prefix){
+  (prefix==='hm'?HM_SEL:ZZ_SEL).clear();
+  var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
+  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
 }
 
 function toggleCat(prefix,catId){
   var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
   if(csel.has(catId))csel.delete(catId);else csel.add(catId);
-  var d=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
-  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
+  var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
+  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
 }
-function toggleAllCat(prefix){
-  var d=prefix==='hm'?HM:ZZ;var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
-  if(csel.size===d.cats.length)csel.clear();else d.cats.forEach(function(c){csel.add(c.id)});
+function addAllCat(prefix){
+  var data=prefix==='hm'?HM:ZZ;var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
+  data.cats.forEach(function(c){csel.add(c.id)});
   var p=prefix==='hm'?'顶展':'钻展';
-  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
+  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
 }
-function clearAllCat(prefix){
+function clearCat(prefix){
   (prefix==='hm'?HM_CSEL:ZZ_CSEL).clear();
-  var d=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
-  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
-}
-function toggleCity(prefix,city){
-  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
-  if(sel.has(city))sel.delete(city);else sel.add(city);
-  var d=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
-  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
-}
-function toggleAllCity(prefix){
-  var d=prefix==='hm'?HM:ZZ;var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
-  if(sel.size===d.cities.length)sel.clear();else d.cities.forEach(function(c){sel.add(c.city)});
-  var p=prefix==='hm'?'顶展':'钻展';
-  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
-}
-function clearAllCity(prefix){
-  (prefix==='hm'?HM_SEL:ZZ_SEL).clear();
-  var d=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
-  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
+  var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
+  renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
 }
 
+// === Matrix rendering ===
 function renderMatrix(prefix,data,product){
   var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
   var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
@@ -366,12 +321,11 @@ function renderMatrix(prefix,data,product){
   var lr='';
   sorted.forEach(function(city){
     if(city.region!==lr){h+='<tr class="rsep"><td class="rl" colspan="'+(cats.length+3)+'">▎'+city.region+'</td></tr>';lr=city.region}
-    var cl=city.city;if(city.lc)cl+='<span class="lc-h">'+city.lc+'</span>';
     var avail=0,rel30=0;
-    h+='<tr><td class="cc">'+cl+'</td>';
+    h+='<tr><td class="cc">'+city.city+'</td>';
     cats.forEach(function(cat){
       var occ=city.occ[cat.id];
-      if(!occ){avail++;h+='<td class="av" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\''+product+'\')" title="点击跳转'+city.city+'·'+cat.label+'" style="cursor:pointer;color:#66ffaa44">+</td>'}
+      if(!occ){avail++;h+='<td class="av" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\''+product+'\')" title="'+city.city+'·'+cat.label+'" style="cursor:pointer;color:#66ffaa44">+</td>'}
       else if(occ.d<0){avail++;h+='<td class="fr" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\''+product+'\')" title="已释放" style="cursor:pointer">✓</td>'}
       else if(occ.d<=30){rel30++;h+='<td class="so" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\''+product+'\')" title="'+occ.ds+'释放" style="cursor:pointer">'+occ.ds+'</td>'}
       else if(occ.d<=90)h+='<td class="md" title="'+occ.ds+'">'+occ.ds+'</td>';
