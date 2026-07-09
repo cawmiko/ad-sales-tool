@@ -143,11 +143,11 @@ function switchTab(tab,el){
   closeSuggest();
   if(tab==='heatmap'&&!HM){
     document.getElementById('hmWrap').innerHTML='<div class="loading">加载中...</div>';
-    fetch('data/heatmap.json').then(function(r){return r.json()}).then(function(d){HM=d;initHM()});
+    fetch('data/heatmap.json?v='+Date.now()).then(function(r){return r.json()}).then(function(d){HM=d;initHM()});
   }
   if(tab==='zuanzhan'&&!ZZ){
     document.getElementById('zzWrap').innerHTML='<div class="loading">加载中...</div>';
-    fetch('data/zuanzhan-heatmap.json').then(function(r){return r.json()}).then(function(d){ZZ=d;initZZ()});
+    fetch('data/zuanzhan-heatmap.json?v='+Date.now()).then(function(r){return r.json()}).then(function(d){ZZ=d;initZZ()});
   }
 }
 
