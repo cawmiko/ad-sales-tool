@@ -5,22 +5,16 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color:#d0d8e8;min-height:100vh;-webkit-text-size-adjust:100%}
-
-/* Header */
 .hdr{padding:16px 16px 12px;border-bottom:1px solid rgba(77,216,255,0.08)}
 .hdr h1{font-size:18px;color:#fff;font-weight:800}
 .hdr h1 em{font-style:normal;color:#4dd8ff}
 .hdr .sub{font-size:11px;color:#5a6a88;margin-top:2px}
-
-/* Main tabs */
 .main-tabs{display:flex;gap:0;border-bottom:1px solid rgba(77,216,255,0.08);padding:0 16px}
 .main-tab{padding:10px 18px;font-size:13px;cursor:pointer;background:transparent;color:#5a6a88;border:none;border-bottom:2px solid transparent;font-weight:500}
 .main-tab:hover{color:#8a9ab0}
 .main-tab.active{color:#4dd8ff;border-bottom-color:#4dd8ff;font-weight:600}
 .tab-content{display:none;padding:12px 16px 80px}
 .tab-content.active{display:block}
-
-/* KPIs */
 .kpi-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
 .kpi-card{background:#111b2e;border:1px solid rgba(77,216,255,0.06);border-radius:10px;padding:10px 14px;min-width:70px;flex-shrink:0}
 .kpi-v{font-size:18px;font-weight:800;color:#fff}
@@ -28,52 +22,39 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .kpi-card.green .kpi-v{color:#66ffaa}
 .kpi-card.orange .kpi-v{color:#ffaa44}
 .kpi-card.red .kpi-v{color:#ff6b6b}
-
-/* Filters */
 .filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
 .filter-sel{padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:8px;background:rgba(255,255,255,0.03);color:#8a9ab0;font-size:12px;outline:none;min-width:80px}
 .search-input{flex:1;min-width:100px;padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:8px;background:rgba(255,255,255,0.03);color:#d0d8e8;font-size:12px;outline:none}
 .filter-sel:focus,.search-input:focus{border-color:#4dd8ff}
-
-/* Sort */
-.sort-row{display:flex;gap:4px;margin-bottom:10px}
-.sort-btn{padding:5px 10px;border:1px solid rgba(77,216,255,0.1);border-radius:6px;background:transparent;color:#5a6a88;font-size:11px;cursor:pointer}
-.sort-btn.active{background:rgba(77,216,255,0.1);color:#4dd8ff;border-color:rgba(77,216,255,0.3)}
-
-/* Store cards */
-.store-card{background:#111b2e;border:1px solid rgba(77,216,255,0.06);border-radius:10px;padding:12px 14px;margin-bottom:8px}
-.store-card.p0{border-left:3px solid #ff6b6b}
-.store-card.p1{border-left:3px solid #ffaa44}
-.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
-.sc-name{font-size:14px;font-weight:600;color:#e0e6f0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sc-score{font-size:15px;font-weight:800;padding:2px 8px;border-radius:6px;flex-shrink:0;margin-left:8px}
-.sc-score.p0{background:rgba(255,107,107,0.15);color:#ff6b6b}
-.sc-score.p1{background:rgba(255,170,68,0.15);color:#ffaa44}
-.sc-score.p2{background:rgba(77,216,255,0.08);color:#5a8aaa}
-.sc-meta{display:flex;gap:6px;font-size:11px;color:#5a6a88;margin-bottom:6px;flex-wrap:wrap}
-.sc-tags{display:flex;gap:4px;flex-wrap:wrap}
-.sc-tag{padding:2px 7px;border-radius:6px;font-size:10px;font-weight:600}
-.tag-l1{background:rgba(77,216,255,0.1);color:#4dd8ff}
-.tag-trade{background:rgba(255,107,107,0.12);color:#ff6b6b}
-.tag-adv{background:rgba(255,170,68,0.12);color:#ffaa44}
-.tag-potential{background:rgba(102,255,170,0.1);color:#66ffaa}
-.sc-nums{display:flex;gap:12px;font-size:11px;color:#5a6a88;margin-top:6px}
-.sc-nums .nv{color:#c8d0e0;font-weight:600}
 .count-bar{font-size:11px;color:#5a6a88;margin-bottom:8px}
 .empty-msg{text-align:center;padding:40px 20px;color:#5a6a88;font-size:13px}
 
 /* Heatmap */
 .hm-legend{display:flex;gap:10px;padding:6px 0;font-size:11px;color:#5a6a88;flex-wrap:wrap;margin-bottom:8px}
 .hm-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:3px;vertical-align:middle}
-.hm-rtabs{display:flex;gap:0;margin-bottom:10px;overflow-x:auto;border-bottom:1px solid rgba(77,216,255,0.06)}
-.hm-rtab{padding:8px 14px;font-size:12px;cursor:pointer;background:transparent;color:#5a6a88;border:none;border-bottom:2px solid transparent;white-space:nowrap}
-.hm-rtab:hover{color:#8a9ab0}
-.hm-rtab.active{color:#4dd8ff;border-bottom-color:#4dd8ff}
+
+/* Multi-select filter */
+.hm-filter{background:#111b2e;border:1px solid rgba(77,216,255,0.08);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.hm-filter-label{font-size:11px;color:#5a6a88;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.hm-filter-label .act-btn{font-size:10px;color:#4dd8ff;cursor:pointer;padding:2px 8px;border:1px solid rgba(77,216,255,0.2);border-radius:4px;background:transparent}
+.hm-filter-label .act-btn:hover{background:rgba(77,216,255,0.08)}
+.hm-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.hm-chip{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid rgba(77,216,255,0.12);background:rgba(255,255,255,0.02);color:#5a6a88;transition:all .15s;user-select:none}
+.hm-chip:hover{border-color:rgba(77,216,255,0.3);color:#8a9ab0}
+.hm-chip.on{background:rgba(77,216,255,0.12);border-color:rgba(77,216,255,0.35);color:#4dd8ff;font-weight:600}
+.hm-chip .chip-x{margin-left:4px;font-size:9px;opacity:0.5}
+.hm-city-search{width:100%;padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:6px;background:rgba(255,255,255,0.03);color:#d0d8e8;font-size:12px;outline:none;margin-bottom:6px}
+.hm-city-search:focus{border-color:#4dd8ff}
+.hm-city-list{max-height:160px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:3px;padding:2px 0}
+.hm-city-list::-webkit-scrollbar{width:4px}
+.hm-city-list::-webkit-scrollbar-thumb{background:rgba(77,216,255,0.15);border-radius:2px}
+.hm-selected-bar{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.hm-selected-count{font-size:11px;color:#5a6a88}
+
 .hm-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table.hm{border-collapse:separate;border-spacing:1px;font-size:11px;width:100%}
 table.hm th{position:sticky;top:0;z-index:10;background:#0e1728;padding:5px 3px;font-weight:600;color:#5a7a9a;font-size:10px;white-space:nowrap;text-align:center}
 table.hm th.hc{position:sticky;left:0;z-index:20;text-align:left;padding:6px 10px;color:#8a9ab0;writing-mode:horizontal-tb;min-width:80px}
-table.hm th.gs{width:1px;background:rgba(77,216,255,0.1);padding:0}
 table.hm td{padding:4px 3px;text-align:center;border-radius:2px;height:22px;font-size:10px;min-width:28px}
 table.hm td.cc{position:sticky;left:0;z-index:5;background:#111b2e;text-align:left;padding:5px 10px;font-weight:500;white-space:nowrap;color:#8a9ab0;font-size:11px}
 table.hm td.av{background:rgba(102,255,170,0.05);cursor:pointer}
@@ -82,30 +63,12 @@ table.hm td.fr{background:rgba(102,255,170,0.12);color:#66ffaa;font-weight:700}
 table.hm td.so{background:rgba(255,170,68,0.2);color:#ffc844;font-weight:700}
 table.hm td.md{background:rgba(255,107,107,0.12);color:#aa6666}
 table.hm td.fa{background:rgba(255,80,80,0.05);color:#553838}
-table.hm td.gs{width:1px;background:rgba(77,216,255,0.04);padding:0}
 table.hm td.sa{color:#66ffaa;font-weight:700;text-align:center;padding:4px 6px}
 table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 .rsep td{padding:0!important;border:none!important}
 .rsep .rl{font-size:10px;color:#4dd8ff;font-weight:700;padding:10px 10px 4px;letter-spacing:2px;background:#111b2e}
 .lc-h{font-size:8px;color:#3a4a58;display:block;margin-top:1px}
-
 .loading{text-align:center;padding:60px 20px;color:#5a6a88;font-size:13px}
-
-/* Wordpacks */
-.wp-search-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.wp-card{background:#111b2e;border:1px solid rgba(77,216,255,0.06);border-radius:10px;padding:14px;margin-bottom:10px}
-.wp-cat-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:2px}
-.wp-cat-meta{font-size:11px;color:#5a6a88;margin-bottom:8px}
-.wp-words{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
-.wp-word{padding:3px 8px;background:rgba(77,216,255,0.08);border:1px solid rgba(77,216,255,0.12);border-radius:6px;font-size:11px;color:#8ab4d0}
-.wp-word.match{background:rgba(255,170,68,0.15);border-color:rgba(255,170,68,0.3);color:#ffaa44;font-weight:600}
-.wp-price-row{display:flex;align-items:center;gap:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.04)}
-.wp-price{font-size:20px;font-weight:800;color:#4dd8ff}
-.wp-price-label{font-size:11px;color:#5a6a88}
-.wp-price-city{font-size:12px;color:#8a9ab0;font-weight:500}
-.wp-dist{font-size:11px;color:#5a6a88;margin-left:auto}
-.wp-products{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
-.wp-prod{padding:1px 5px;background:rgba(255,255,255,0.03);border-radius:4px;font-size:9px;color:#3a4a58}
 
 /* Biz context card */
 .biz-context-card{background:#111b2e;border:1px solid rgba(77,216,255,0.12);border-radius:12px;padding:20px;margin-top:8px}
@@ -129,7 +92,7 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
   <button class="main-tab" onclick="switchTab('zuanzhan',this)">钻展抢占地图</button>
 </div>
 
-<!-- Biz tab: 商机明细 -->
+<!-- Biz tab -->
 <div id="tabBiz" class="tab-content active">
   <div class="filter-row" id="bizFilterRow"></div>
   <div class="count-bar" id="bizCount"></div>
@@ -151,12 +114,12 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
     <span><i style="background:rgba(255,107,107,0.15)"></i>30-90天</span>
     <span><i style="background:rgba(255,80,80,0.06)"></i>90天+</span>
   </div>
-  <div class="hm-rtabs" id="hmRTabs"></div>
+  <div id="hmFilter"></div>
   <div class="kpi-row" id="hmKpis"></div>
   <div class="hm-wrap" id="hmWrap"><div class="loading">点击"顶展抢占地图"加载数据...</div></div>
 </div>
 
-<!-- Zuanzhan Heatmap tab -->
+<!-- Zuanzhan tab -->
 <div id="tabZuanzhan" class="tab-content">
   <div class="hm-legend">
     <span style="color:#f0a030;font-weight:600;margin-right:8px">高频&钻展v1</span>
@@ -166,13 +129,15 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
     <span><i style="background:rgba(255,107,107,0.15)"></i>30-90天</span>
     <span><i style="background:rgba(255,80,80,0.06)"></i>90天+</span>
   </div>
-  <div class="hm-rtabs" id="zzRTabs"></div>
+  <div id="zzFilter"></div>
   <div class="kpi-row" id="zzKpis"></div>
   <div class="hm-wrap" id="zzWrap"><div class="loading">点击"钻展抢占地图"加载数据...</div></div>
 </div>
 
 <script>
-var ALL_STORES=null,HM=null,HM_R='all',ZZ=null,ZZ_R='all';
+var HM=null,ZZ=null;
+var HM_SEL=new Set(),HM_CSEL=new Set(),HM_CSEARCH='';
+var ZZ_SEL=new Set(),ZZ_CSEL=new Set(),ZZ_CSEARCH='';
 var BIZ={city:'',cat:''};
 
 function switchTab(tab,el){
@@ -183,26 +148,23 @@ function switchTab(tab,el){
   document.getElementById('tabZuanzhan').classList.toggle('active',tab==='zuanzhan');
   if(tab==='heatmap'&&!HM){
     document.getElementById('hmWrap').innerHTML='<div class="loading">加载中...</div>';
-    fetch('data/heatmap.json').then(r=>r.json()).then(d=>{HM=d;renderHM()}).catch(e=>console.error(e));
+    fetch('data/heatmap.json').then(r=>r.json()).then(d=>{HM=d;initHM()}).catch(e=>console.error(e));
   }
   if(tab==='zuanzhan'&&!ZZ){
     document.getElementById('zzWrap').innerHTML='<div class="loading">加载中...</div>';
-    fetch('data/zuanzhan-heatmap.json').then(r=>r.json()).then(d=>{ZZ=d;renderZZ()}).catch(e=>console.error(e));
+    fetch('data/zuanzhan-heatmap.json').then(r=>r.json()).then(d=>{ZZ=d;initZZ()}).catch(e=>console.error(e));
   }
 }
 
-// === Biz: 商机明细 ===
-function jumpToBiz(cityName, catLabel, product){
-  BIZ.city=cityName; BIZ.cat=catLabel;
-  // Switch to biz tab
+// === Biz ===
+function jumpToBiz(cityName,catLabel,product){
+  BIZ.city=cityName;BIZ.cat=catLabel;
   document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.main-tab')[0].classList.add('active');
   document.getElementById('tabBiz').classList.add('active');
   document.getElementById('tabHeatmap').classList.remove('active');
   document.getElementById('tabZuanzhan').classList.remove('active');
-  // Show context
-  renderBizContext(product);
-  window.scrollTo(0,0);
+  renderBizContext(product);window.scrollTo(0,0);
 }
 function renderBizContext(product){
   var h='<div class="biz-context-card">';
@@ -220,105 +182,130 @@ function renderBizContext(product){
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
-// === Heatmap ===
-function renderHM(){
-  if(!HM)return;
-  var rh='<button class="hm-rtab '+(HM_R==='all'?'active':'')+'" onclick="setHMR(\'all\')">全部 '+HM.cities.length+'城</button>';
-  HM.regions.forEach(r=>{
-    var cnt=HM.cities.filter(c=>c.region===r).length;
-    rh+='<button class="hm-rtab '+(HM_R===r?'active':'')+'" onclick="setHMR(\''+r+'\')">'+r+' '+cnt+'</button>';
+// === Multi-select heatmap ===
+function initHM(){
+  HM_SEL=new Set(HM.cities.map(c=>c.city));
+  HM_CSEL=new Set(HM.cats.map(c=>c.id));
+  HM_CSEARCH='';
+  renderFilterUI('hm',HM,'顶展');renderMatrix('hm',HM,'顶展');
+}
+function initZZ(){
+  ZZ_SEL=new Set(ZZ.cities.map(c=>c.city));
+  ZZ_CSEL=new Set(ZZ.cats.map(c=>c.id));
+  ZZ_CSEARCH='';
+  renderFilterUI('zz',ZZ,'钻展');renderMatrix('zz',ZZ,'钻展');
+}
+
+function renderFilterUI(prefix,data,product){
+  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+  var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
+  var csearch=prefix==='hm'?HM_CSEARCH:ZZ_CSEARCH;
+  var el=document.getElementById(prefix+'Filter');
+  var h='<div class="hm-filter">';
+  // Category chips
+  h+='<div class="hm-filter-label">类目 <button class="act-btn" onclick="toggleAllCat(\''+prefix+'\',\''+product+'\')">全选</button><button class="act-btn" onclick="clearAllCat(\''+prefix+'\',\''+product+'\')">清空</button></div>';
+  h+='<div class="hm-chips">';
+  data.cats.forEach(function(c){
+    var on=csel.has(c.id);
+    h+='<span class="hm-chip'+(on?' on':'')+'" onclick="toggleCat(\''+prefix+'\',\''+c.id+'\',\''+product+'\')">'+esc(c.label)+(on?'<span class="chip-x">✕</span>':'')+'</span>';
   });
-  document.getElementById('hmRTabs').innerHTML=rh;
-  
-  var cities=HM_R==='all'?HM.cities:HM.cities.filter(c=>c.region===HM_R);
-  var cats=HM.cats;
+  h+='</div>';
+  // City search
+  h+='<div class="hm-filter-label">城市 <button class="act-btn" onclick="toggleAllCity(\''+prefix+'\',\''+product+'\')">全选</button><button class="act-btn" onclick="clearAllCity(\''+prefix+'\',\''+product+'\')">清空</button></div>';
+  h+='<input class="hm-city-search" placeholder="搜索城市..." value="'+esc(csearch)+'" oninput="filterCities(\''+prefix+'\',this.value)">';
+  var cities=data.cities;
+  if(csearch){var q=csearch.toLowerCase();cities=cities.filter(function(c){return c.city.toLowerCase().indexOf(q)>=0||(c.lc||'').toLowerCase().indexOf(q)>=0||(c.region||'').toLowerCase().indexOf(q)>=0})}
+  h+='<div class="hm-city-list">';
+  cities.forEach(function(c){
+    var on=sel.has(c.city);
+    var label=c.city+(c.lc?'('+c.lc+')':'');
+    h+='<span class="hm-chip'+(on?' on':'')+'" onclick="toggleCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\',\''+product+'\')">'+esc(label)+(on?'<span class="chip-x">✕</span>':'')+'</span>';
+  });
+  h+='</div>';
+  if(sel.size>0||csel.size>0){
+    h+='<div class="hm-selected-bar"><span class="hm-selected-count">已选 '+sel.size+'城 × '+csel.size+'类目</span></div>';
+  }
+  h+='</div>';
+  el.innerHTML=h;
+}
+
+function toggleCat(prefix,catId,product){
+  var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
+  if(csel.has(catId))csel.delete(catId);else csel.add(catId);
+  var d=prefix==='hm'?HM:ZZ;
+  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+}
+function toggleAllCat(prefix,product){
+  var d=prefix==='hm'?HM:ZZ;var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
+  if(csel.size===d.cats.length)csel.clear();else d.cats.forEach(function(c){csel.add(c.id)});
+  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+}
+function clearAllCat(prefix,product){
+  var d=prefix==='hm'?HM:ZZ;(prefix==='hm'?HM_CSEL:ZZ_CSEL).clear();
+  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+}
+function toggleCity(prefix,city,product){
+  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+  if(sel.has(city))sel.delete(city);else sel.add(city);
+  var d=prefix==='hm'?HM:ZZ;
+  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+}
+function toggleAllCity(prefix,product){
+  var d=prefix==='hm'?HM:ZZ;var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+  if(sel.size===d.cities.length)sel.clear();else d.cities.forEach(function(c){sel.add(c.city)});
+  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+}
+function clearAllCity(prefix,product){
+  var d=prefix==='hm'?HM:ZZ;(prefix==='hm'?HM_SEL:ZZ_SEL).clear();
+  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+}
+function filterCities(prefix,val){
+  if(prefix==='hm')HM_CSEARCH=val;else ZZ_CSEARCH=val;
+  var d=prefix==='hm'?HM:ZZ;renderFilterUI(prefix,d,'');
+}
+
+function renderMatrix(prefix,data,product){
+  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+  var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
+  var wrapId=prefix==='hm'?'hmWrap':'zzWrap';
+  var kpiId=prefix==='hm'?'hmKpis':'zzKpis';
+  var cities=data.cities.filter(function(c){return sel.has(c.city)});
+  var cats=data.cats.filter(function(c){return csel.has(c.id)});
+  if(!cities.length||!cats.length){
+    document.getElementById(kpiId).innerHTML='';
+    document.getElementById(wrapId).innerHTML='<div class="empty-msg">请选择至少1个城市和1个类目</div>';
+    return;
+  }
   var tA=0,tR=0;
-  cities.forEach(c=>{tA+=c.avail;tR+=c.rel30});
-  document.getElementById('hmKpis').innerHTML=
+  cities.forEach(function(c){cats.forEach(function(cat){if(!c.occ[cat.id])tA++;else if(c.occ[cat.id].d>=0&&c.occ[cat.id].d<=30)tR++})});
+  document.getElementById(kpiId).innerHTML=
     '<div class="kpi-card"><div class="kpi-v">'+cities.length+'</div><div class="kpi-l">城市</div></div>'+
     '<div class="kpi-card green"><div class="kpi-v">'+tA+'</div><div class="kpi-l">空白槽位</div></div>'+
     '<div class="kpi-card orange"><div class="kpi-v">'+tR+'</div><div class="kpi-l">30天内释放</div></div>'+
-    '<div class="kpi-card"><div class="kpi-v">'+cats.length+'</div><div class="kpi-l">核心类目</div></div>';
-  
-  var gb=[];var lg='';
-  cats.forEach((c,i)=>{if(c.group!==lg&&lg!=='')gb.push(i);lg=c.group});
-  var nc=cats.length+3+gb.length;
-  
+    '<div class="kpi-card"><div class="kpi-v">'+cats.length+'</div><div class="kpi-l">类目</div></div>';
+  var regionOrder={'华北':0,'华东':1,'华中':2,'华南':3,'华西':4};
+  var sorted=cities.slice().sort(function(a,b){return(regionOrder[a.region]||99)-(regionOrder[b.region]||99)});
   var h='<table class="hm"><thead><tr><th class="hc">城市</th>';
-  cats.forEach((c,i)=>{if(gb.includes(i))h+='<th class="gs"></th>';h+='<th title="'+c.label+'">'+c.label+'</th>'});
+  cats.forEach(function(c){h+='<th title="'+c.label+'">'+c.label+'</th>'});
   h+='<th style="color:#66ffaa">可抢</th><th style="color:#ffaa44">30天</th></tr></thead><tbody>';
-  
   var lr='';
-  cities.forEach(city=>{
-    if(city.region!==lr){h+='<tr class="rsep"><td class="rl" colspan="'+nc+'">▎'+city.region+'</td></tr>';lr=city.region}
+  sorted.forEach(function(city){
+    if(city.region!==lr){h+='<tr class="rsep"><td class="rl" colspan="'+(cats.length+3)+'">▎'+city.region+'</td></tr>';lr=city.region}
     var cl=city.city;if(city.lc)cl+='<span class="lc-h">'+city.lc+'</span>';
+    var avail=0,rel30=0;
     h+='<tr><td class="cc">'+cl+'</td>';
-    cats.forEach((cat,i)=>{
-      if(gb.includes(i))h+='<td class="gs"></td>';
+    cats.forEach(function(cat){
       var occ=city.occ[cat.id];
-      if(!occ)h+='<td class="av" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'顶展\')" title="点击跳转'+city.city+'·'+cat.label+'的商机" style="cursor:pointer;color:#66ffaa44">+</td>';
-      else if(occ.d<0)h+='<td class="fr" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'顶展\')" title="已释放，查看商机" style="cursor:pointer">✓</td>';
-      else if(occ.d<=30)h+='<td class="so" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'顶展\')" title="'+occ.ds+'释放" style="cursor:pointer">'+occ.ds+'</td>';
+      if(!occ){avail++;h+='<td class="av" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\''+product+'\')" title="点击跳转'+city.city+'·'+cat.label+'" style="cursor:pointer;color:#66ffaa44">+</td>'}
+      else if(occ.d<0){avail++;h+='<td class="fr" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\''+product+'\')" title="已释放" style="cursor:pointer">✓</td>'}
+      else if(occ.d<=30){rel30++;h+='<td class="so" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\''+product+'\')" title="'+occ.ds+'释放" style="cursor:pointer">'+occ.ds+'</td>'}
       else if(occ.d<=90)h+='<td class="md" title="'+occ.ds+'">'+occ.ds+'</td>';
       else h+='<td class="fa" title="'+occ.ds+'">'+occ.ds+'</td>';
     });
-    h+='<td class="sa">'+city.avail+'</td><td class="sr">'+(city.rel30>0?city.rel30:'-')+'</td></tr>';
+    h+='<td class="sa">'+avail+'</td><td class="sr">'+(rel30>0?rel30:'-')+'</td></tr>';
   });
   h+='</tbody></table>';
-  document.getElementById('hmWrap').innerHTML=h;
+  document.getElementById(wrapId).innerHTML=h;
 }
-function setHMR(r){HM_R=r;renderHM()}
-
-// === Zuanzhan Heatmap ===
-var ZZ=null, ZZ_R='all';
-function renderZZ(){
-  if(!ZZ)return;
-  var rh='<button class="hm-rtab '+(ZZ_R==='all'?'active':'')+'" onclick="setZZR(\'all\')">全部 '+ZZ.cities.length+'城</button>';
-  ZZ.regions.forEach(r=>{
-    var cnt=ZZ.cities.filter(c=>c.region===r).length;
-    rh+='<button class="hm-rtab '+(ZZ_R===r?'active':'')+'" onclick="setZZR(\''+r+'\')">'+r+' '+cnt+'</button>';
-  });
-  document.getElementById('zzRTabs').innerHTML=rh;
-  
-  var cities=ZZ_R==='all'?ZZ.cities:ZZ.cities.filter(c=>c.region===ZZ_R);
-  var cats=ZZ.cats;
-  var tA=0,tR=0;
-  cities.forEach(c=>{tA+=c.avail;tR+=c.rel30});
-  document.getElementById('zzKpis').innerHTML=
-    '<div class="kpi-card"><div class="kpi-v">'+cities.length+'</div><div class="kpi-l">城市</div></div>'+
-    '<div class="kpi-card green"><div class="kpi-v">'+tA+'</div><div class="kpi-l">空白槽位</div></div>'+
-    '<div class="kpi-card orange"><div class="kpi-v">'+tR+'</div><div class="kpi-l">30天内释放</div></div>'+
-    '<div class="kpi-card"><div class="kpi-v">'+cats.length+'</div><div class="kpi-l">关注类目</div></div>';
-  
-  // Group boundaries for group separators
-  var gb=[];var lg='';
-  cats.forEach((c,i)=>{if(c.group!==lg&&lg!=='')gb.push(i);lg=c.group});
-  var nc=cats.length+3+gb.length;
-  
-  var h='<table class="hm"><thead><tr><th class="hc">城市</th>';
-  cats.forEach((c,i)=>{if(gb.includes(i))h+='<th class="gs"></th>';h+='<th title="'+c.label+'">'+c.label+'</th>'});
-  h+='<th style="color:#66ffaa">可抢</th><th style="color:#ffaa44">30天</th></tr></thead><tbody>';
-  
-  var lr='';
-  cities.forEach(city=>{
-    if(city.region!==lr){h+='<tr class="rsep"><td class="rl" colspan="'+nc+'">▎'+city.region+'</td></tr>';lr=city.region}
-    var cl=city.city;if(city.lc)cl+='<span class="lc-h">'+city.lc+'</span>';
-    h+='<tr><td class="cc">'+cl+'</td>';
-    cats.forEach((cat,i)=>{
-      if(gb.includes(i))h+='<td class="gs"></td>';
-      var occ=city.occ[cat.id];
-      if(!occ)h+='<td class="av" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'钻展\')" title="点击跳转'+city.city+'·'+cat.label+'的商机" style="cursor:pointer;color:#66ffaa44">+</td>';
-      else if(occ.d<0)h+='<td class="fr" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'钻展\')" title="已释放，查看商机" style="cursor:pointer">✓</td>';
-      else if(occ.d<=30)h+='<td class="so" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'钻展\')" title="'+occ.ds+'释放" style="cursor:pointer">'+occ.ds+'</td>';
-      else if(occ.d<=90)h+='<td class="md" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'钻展\')" title="'+occ.ds+'" style="cursor:pointer">'+occ.ds+'</td>';
-      else h+='<td class="fa" title="'+occ.ds+'">'+occ.ds+'</td>';
-    });
-    h+='<td class="sa">'+city.avail+'</td><td class="sr">'+(city.rel30>0?city.rel30:'-')+'</td></tr>';
-  });
-  h+='</tbody></table>';
-  document.getElementById('zzWrap').innerHTML=h;
-}
-function setZZR(r){ZZ_R=r;renderZZ()}
-
 </script>
 </body></html>
