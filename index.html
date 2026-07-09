@@ -106,27 +106,40 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 .wp-dist{font-size:11px;color:#5a6a88;margin-left:auto}
 .wp-products{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
 .wp-prod{padding:1px 5px;background:rgba(255,255,255,0.03);border-radius:4px;font-size:9px;color:#3a4a58}
+
+/* Biz context card */
+.biz-context-card{background:#111b2e;border:1px solid rgba(77,216,255,0.12);border-radius:12px;padding:20px;margin-top:8px}
+.biz-ctx-header{font-size:15px;font-weight:700;color:#4dd8ff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.biz-ctx-icon{font-size:18px}
+.biz-ctx-info{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.biz-ctx-item{background:rgba(77,216,255,0.06);border:1px solid rgba(77,216,255,0.1);border-radius:8px;padding:10px 16px;min-width:100px}
+.biz-ctx-label{display:block;font-size:10px;color:#5a6a88;margin-bottom:4px}
+.biz-ctx-value{display:block;font-size:16px;font-weight:700;color:#e0e6f0}
+.biz-ctx-placeholder{text-align:center;padding:20px;color:#5a6a88;font-size:12px;border-top:1px solid rgba(77,216,255,0.06)}
 </style></head><body>
 
 <div class="hdr">
   <h1>商机 <em>筛选助手</em></h1>
-  <div class="sub">门店商机 + 顶展抢占地图 + 钻展抢占地图 + 词包价格查询</div>
+  <div class="sub">商机明细 + 顶展抢占地图 + 钻展抢占地图</div>
 </div>
 
 <div class="main-tabs">
-  <button class="main-tab active" onclick="switchTab('stores',this)">门店商机</button>
+  <button class="main-tab active" onclick="switchTab('biz',this)">商机明细</button>
   <button class="main-tab" onclick="switchTab('heatmap',this)">顶展抢占地图</button>
   <button class="main-tab" onclick="switchTab('zuanzhan',this)">钻展抢占地图</button>
-  <button class="main-tab" onclick="switchTab('wordpacks',this)">词包价格</button>
 </div>
 
-<!-- Stores tab -->
-<div id="tabStores" class="tab-content active">
-  <div class="kpi-row" id="kpiRow"><div class="loading">加载中...</div></div>
-  <div class="filter-row" id="filterRow"></div>
-  <div class="sort-row" id="sortRow"></div>
-  <div class="count-bar" id="countBar"></div>
-  <div id="storeList"></div>
+<!-- Biz tab: 商机明细 -->
+<div id="tabBiz" class="tab-content active">
+  <div class="filter-row" id="bizFilterRow"></div>
+  <div class="count-bar" id="bizCount"></div>
+  <div id="bizList">
+    <div class="empty-msg" style="text-align:center;padding:60px 20px;color:#5a6a88">
+      <div style="font-size:36px;margin-bottom:12px">📋</div>
+      <div style="font-size:14px;color:#8a9ab0;margin-bottom:8px">商机明细数据待更新</div>
+      <div style="font-size:12px">从顶展/钻展抢占地图的空白格点击，可跳转到对应城市+类目查看商机</div>
+    </div>
+  </div>
 </div>
 
 <!-- Heatmap tab -->
@@ -158,37 +171,16 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
   <div class="hm-wrap" id="zzWrap"><div class="loading">点击"钻展抢占地图"加载数据...</div></div>
 </div>
 
-<!-- Wordpacks tab -->
-<div id="tabWordpacks" class="tab-content">
-  <div class="wp-search-row">
-    <input class="search-input" id="wpSearch" placeholder="搜索类目或关键词（如：火锅、烧烤、粤菜）..." oninput="renderWP()">
-    <input class="filter-sel" id="wpCity" placeholder="输入城市名" list="wpCityList" oninput="onWPCityInput()" style="min-width:140px">
-    <datalist id="wpCityList"></datalist>
-    <input class="filter-sel" id="wpDistrict" placeholder="输入区名" list="wpDistList" oninput="renderWP()" style="min-width:120px;display:none">
-    <datalist id="wpDistList"></datalist>
-  </div>
-  <div class="count-bar" id="wpCount"></div>
-  <div id="wpList"><div class="loading">点击"词包价格"加载数据...</div></div>
-</div>
-
 <script>
 var ALL_STORES=null,HM=null,HM_R='all',ZZ=null,ZZ_R='all';
-var F={prov:'',city:'',cat:'',l1:'',q:''},SORT='score';
-
-// Load stores
-fetch('data/all_stores.json').then(r=>r.json()).then(d=>{ALL_STORES=d;init()}).catch(e=>{document.getElementById('storeList').innerHTML='<div class="empty-msg">数据加载失败</div>'});
-
-function init(){
-  renderKPIs();renderFilters();renderSort();renderStores();
-}
+var BIZ={city:'',cat:''};
 
 function switchTab(tab,el){
   document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('tabStores').classList.toggle('active',tab==='stores');
+  document.getElementById('tabBiz').classList.toggle('active',tab==='biz');
   document.getElementById('tabHeatmap').classList.toggle('active',tab==='heatmap');
   document.getElementById('tabZuanzhan').classList.toggle('active',tab==='zuanzhan');
-  document.getElementById('tabWordpacks').classList.toggle('active',tab==='wordpacks');
   if(tab==='heatmap'&&!HM){
     document.getElementById('hmWrap').innerHTML='<div class="loading">加载中...</div>';
     fetch('data/heatmap.json').then(r=>r.json()).then(d=>{HM=d;renderHM()}).catch(e=>console.error(e));
@@ -197,111 +189,38 @@ function switchTab(tab,el){
     document.getElementById('zzWrap').innerHTML='<div class="loading">加载中...</div>';
     fetch('data/zuanzhan-heatmap.json').then(r=>r.json()).then(d=>{ZZ=d;renderZZ()}).catch(e=>console.error(e));
   }
-  if(tab==='wordpacks'&&!WP){
-    document.getElementById('wpList').innerHTML='<div class="loading">加载中...</div>';
-    fetch('data/wordpacks.json?v=3').then(r=>r.json()).then(d=>{WP=d;initWP()}).catch(e=>console.error(e));
-  }
 }
 
-// === Stores ===
-function filtered(){
-  var list=ALL_STORES||[];
-  if(F.prov)list=list.filter(s=>s.prov===F.prov);
-  if(F.city)list=list.filter(s=>s.c===F.city);
-  if(F.cat)list=list.filter(s=>s.cat===F.cat);
-  if(F.l1)list=list.filter(s=>s.l===F.l1);
-  if(F.q){var q=F.q.toLowerCase();list=list.filter(s=>(s.n||'').toLowerCase().includes(q)||(s.prov||'').toLowerCase().includes(q))}
-  if(SORT==='score')list.sort((a,b)=>(b.s||0)-(a.s||0));
-  else if(SORT==='gmv')list.sort((a,b)=>(b.g||0)-(a.g||0));
-  else if(SORT==='ad')list.sort((a,b)=>(b.ad||0)-(a.ad||0));
-  else list.sort((a,b)=>(a.n||'').localeCompare(b.n||''));
-  return list;
+// === Biz: 商机明细 ===
+function jumpToBiz(cityName, catLabel, product){
+  BIZ.city=cityName; BIZ.cat=catLabel;
+  // Switch to biz tab
+  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.main-tab')[0].classList.add('active');
+  document.getElementById('tabBiz').classList.add('active');
+  document.getElementById('tabHeatmap').classList.remove('active');
+  document.getElementById('tabZuanzhan').classList.remove('active');
+  // Show context
+  renderBizContext(product);
+  window.scrollTo(0,0);
 }
-function renderKPIs(){
-  var list=ALL_STORES||[];
-  var t=list.length,p0=list.filter(s=>s.s>=40).length,p1=list.filter(s=>s.s>=25&&s.s<40).length;
-  var tb=list.filter(s=>s.l==='交易大户').length,adv=list.filter(s=>s.l==='广告在投').length;
-  var hp=list.filter(s=>s.l==='高潜未投').length;
-  document.getElementById('kpiRow').innerHTML=
-    '<div class="kpi-card"><div class="kpi-v">'+t+'</div><div class="kpi-l">活跃门店</div></div>'+
-    '<div class="kpi-card red"><div class="kpi-v">'+p0+'</div><div class="kpi-l">P0优先</div></div>'+
-    '<div class="kpi-card orange"><div class="kpi-v">'+p1+'</div><div class="kpi-l">P1重点</div></div>'+
-    '<div class="kpi-card green"><div class="kpi-v">'+tb+'</div><div class="kpi-l">交易大户</div></div>'+
-    '<div class="kpi-card"><div class="kpi-v">'+adv+'</div><div class="kpi-l">广告在投</div></div>'+
-    '<div class="kpi-card green"><div class="kpi-v">'+hp+'</div><div class="kpi-l">高潜未投</div></div>';
+function renderBizContext(product){
+  var h='<div class="biz-context-card">';
+  h+='<div class="biz-ctx-header"><span class="biz-ctx-icon">📍</span>来自'+product+'抢占地图</div>';
+  h+='<div class="biz-ctx-info">';
+  h+='<div class="biz-ctx-item"><span class="biz-ctx-label">城市</span><span class="biz-ctx-value">'+esc(BIZ.city)+'</span></div>';
+  h+='<div class="biz-ctx-item"><span class="biz-ctx-label">类目</span><span class="biz-ctx-value">'+esc(BIZ.cat)+'</span></div>';
+  h+='<div class="biz-ctx-item"><span class="biz-ctx-label">状态</span><span class="biz-ctx-value" style="color:#66ffaa">空白可抢</span></div>';
+  h+='</div>';
+  h+='<div class="biz-ctx-placeholder">商机明细数据待更新，届时将展示该城市+类目下的具体商户商机</div>';
+  h+='</div>';
+  document.getElementById('bizFilterRow').innerHTML='';
+  document.getElementById('bizCount').textContent='';
+  document.getElementById('bizList').innerHTML=h;
 }
-function renderFilters(){
-  var list=ALL_STORES||[];
-  var provs=[...new Set(list.map(s=>s.prov))].sort();
-  var cities=[...new Set(list.map(s=>s.c))].sort();
-  var cats=[...new Set(list.map(s=>s.cat))].sort();
-  var l1s=['交易大户','广告在投','高潜未投','潜力成长','待激活'];
-  var h='<select class="filter-sel" onchange="F.prov=this.value;renderStores()" style="min-width:120px"><option value="">全部服务商</option>';
-  provs.forEach(p=>{h+='<option>'+esc(p)+'</option>'});
-  h+='</select><select class="filter-sel" onchange="F.city=this.value;renderStores()"><option value="">全部城市</option>';
-  cities.forEach(c=>{h+='<option>'+c+'</option>'});
-  h+='</select><select class="filter-sel" onchange="F.cat=this.value;renderStores()"><option value="">全部类目</option>';
-  cats.forEach(c=>{h+='<option>'+c+'</option>'});
-  h+='</select><select class="filter-sel" onchange="F.l1=this.value;renderStores()"><option value="">全部标签</option>';
-  l1s.forEach(l=>{h+='<option>'+l+'</option>'});
-  h+='</select><input class="search-input" placeholder="搜索门店/服务商..." oninput="F.q=this.value;renderStores()">';
-  document.getElementById('filterRow').innerHTML=h;
-}
-function renderSort(){
-  document.getElementById('sortRow').innerHTML=
-    '<button class="sort-btn active" onclick="setSort(this,\'score\')">按评分</button>'+
-    '<button class="sort-btn" onclick="setSort(this,\'gmv\')">按GMV</button>'+
-    '<button class="sort-btn" onclick="setSort(this,\'ad\')">按广告</button>'+
-    '<button class="sort-btn" onclick="setSort(this,\'name\')">按名称</button>';
-}
-function setSort(el,m){SORT=m;document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderStores()}
-function renderStores(){
-  var list=filtered();
-  document.getElementById('countBar').textContent='共 '+list.length+' 家门店';
-  if(!list.length){document.getElementById('storeList').innerHTML='<div class="empty-msg">无匹配门店</div>';return}
-  var show=list.slice(0,200),h='';
-  show.forEach(s=>{
-    var pc=s.s>=40?'p0':(s.s>=25?'p1':''),sc=s.s>=40?'p0':(s.s>=25?'p1':'p2');
-    var tags='<span class="sc-tag tag-l1">'+s.l+'</span>';
-    if(s.l==='交易大户')tags+='<span class="sc-tag tag-trade">高GMV未投</span>';
-    else if(s.l==='广告在投')tags+='<span class="sc-tag tag-adv">可追售</span>';
-    else if(s.l==='高潜未投')tags+='<span class="sc-tag tag-potential">优先攻坚</span>';
-    var nums='';
-    if(s.g)nums+='<span>GMV <span class="nv">'+fmtN(s.g)+'</span></span>';
-    if(s.ad)nums+='<span>广告 <span class="nv">'+fmtN(s.ad)+'</span></span>';
-    if(s.ca)nums+='<span>现金 <span class="nv">'+fmtN(s.ca)+'</span></span>';
-    if(!nums)nums='<span style="color:#3a4a58">无经营数据</span>';
-    h+='<div class="store-card '+pc+'"><div class="sc-top"><span class="sc-name">'+esc(s.n)+'</span><span class="sc-score '+sc+'">'+s.s+'分</span></div>'+
-      '<div class="sc-meta"><span>'+s.c+'</span><span>'+s.cat+'</span><span style="color:#3a4a68">'+esc(s.prov||'')+'</span></div><div class="sc-tags">'+tags+'</div><div class="sc-nums">'+nums+'</div></div>';
-  });
-  if(list.length>200)h+='<div class="empty-msg">显示前200条，请用筛选缩小范围</div>';
-  document.getElementById('storeList').innerHTML=h;
-}
-function fmtN(n){if(n>=10000)return(n/10000).toFixed(1)+'万';if(n>=1000)return(n/1000).toFixed(1)+'K';return String(Math.round(n))}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
 // === Heatmap ===
-// Category mapping: heatmap group → store category filter value
-var CAT_MAP={'中餐':'中餐','火锅':'火锅','烧烤':'烧烤','小吃快餐':'快餐小吃',
-  '水产海鲜':'生鲜','饮品':'休闲茶饮','日本料理':'日韩料理','自助餐':'自助餐',
-  '糕点-烘焙':'烘焙糕点','西餐':'西餐','东南亚菜':'东南亚菜','熟食':'快餐小吃'};
-
-function jumpToStores(cityName, catGroup){
-  // Switch to stores tab
-  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.main-tab')[0].classList.add('active');
-  document.getElementById('tabStores').classList.add('active');
-  document.getElementById('tabHeatmap').classList.remove('active');
-  // Set filters
-  F.city=cityName;
-  F.cat=CAT_MAP[catGroup]||catGroup;
-  F.prov='';F.l1='';F.q='';
-  // Re-render filters to show selection
-  renderFilters();
-  renderStores();
-  // Scroll to top
-  window.scrollTo(0,0);
-}
 function renderHM(){
   if(!HM)return;
   var rh='<button class="hm-rtab '+(HM_R==='all'?'active':'')+'" onclick="setHMR(\'all\')">全部 '+HM.cities.length+'城</button>';
@@ -337,9 +256,9 @@ function renderHM(){
     cats.forEach((cat,i)=>{
       if(gb.includes(i))h+='<td class="gs"></td>';
       var occ=city.occ[cat.id];
-      if(!occ)h+='<td class="av" onclick="jumpToStores(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.group+'\')" title="点击查看'+city.city+'·'+cat.label+'的门店商机" style="cursor:pointer;color:#66ffaa44">+</td>';
-      else if(occ.d<0)h+='<td class="fr" onclick="jumpToStores(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.group+'\')" title="已释放，点击查看门店" style="cursor:pointer">✓</td>';
-      else if(occ.d<=30)h+='<td class="so" onclick="jumpToStores(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.group+'\')" title="'+occ.ds+'释放，先看现有门店" style="cursor:pointer">'+occ.ds+'</td>';
+      if(!occ)h+='<td class="av" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'顶展\')" title="点击跳转'+city.city+'·'+cat.label+'的商机" style="cursor:pointer;color:#66ffaa44">+</td>';
+      else if(occ.d<0)h+='<td class="fr" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'顶展\')" title="已释放，查看商机" style="cursor:pointer">✓</td>';
+      else if(occ.d<=30)h+='<td class="so" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'顶展\')" title="'+occ.ds+'释放" style="cursor:pointer">'+occ.ds+'</td>';
       else if(occ.d<=90)h+='<td class="md" title="'+occ.ds+'">'+occ.ds+'</td>';
       else h+='<td class="fa" title="'+occ.ds+'">'+occ.ds+'</td>';
     });
@@ -388,10 +307,10 @@ function renderZZ(){
     cats.forEach((cat,i)=>{
       if(gb.includes(i))h+='<td class="gs"></td>';
       var occ=city.occ[cat.id];
-      if(!occ)h+='<td class="av" title="'+city.city+'·'+cat.label+' 空白可抢">+</td>';
-      else if(occ.d<0)h+='<td class="fr" title="已释放">✓</td>';
-      else if(occ.d<=30)h+='<td class="so" title="'+occ.ds+'释放">'+occ.ds+'</td>';
-      else if(occ.d<=90)h+='<td class="md" title="'+occ.ds+'">'+occ.ds+'</td>';
+      if(!occ)h+='<td class="av" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'钻展\')" title="点击跳转'+city.city+'·'+cat.label+'的商机" style="cursor:pointer;color:#66ffaa44">+</td>';
+      else if(occ.d<0)h+='<td class="fr" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'钻展\')" title="已释放，查看商机" style="cursor:pointer">✓</td>';
+      else if(occ.d<=30)h+='<td class="so" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'钻展\')" title="'+occ.ds+'释放" style="cursor:pointer">'+occ.ds+'</td>';
+      else if(occ.d<=90)h+='<td class="md" onclick="jumpToBiz(\''+city.city.replace(/'/g,"\\'")+'\',\''+cat.label+'\',\'钻展\')" title="'+occ.ds+'" style="cursor:pointer">'+occ.ds+'</td>';
       else h+='<td class="fa" title="'+occ.ds+'">'+occ.ds+'</td>';
     });
     h+='<td class="sa">'+city.avail+'</td><td class="sr">'+(city.rel30>0?city.rel30:'-')+'</td></tr>';
@@ -401,137 +320,5 @@ function renderZZ(){
 }
 function setZZR(r){ZZ_R=r;renderZZ()}
 
-// === Wordpacks ===
-var WP=null, WP_CITY='', WP_DIST='';
-function initWP(){
-  if(!WP)return;
-  // Populate city datalist
-  var h='';
-  WP.cities.forEach(c=>{h+='<option value="'+esc(c)+'">'});
-  document.getElementById('wpCityList').innerHTML=h;
-  renderWP();
-}
-function onWPCityInput(){
-  var val=(document.getElementById('wpCity').value||'').trim();
-  WP_CITY='';WP_DIST='';
-  document.getElementById('wpDistrict').value='';
-  
-  if(!val){document.getElementById('wpDistrict').style.display='none';renderWP();return}
-  
-  // Match city
-  var matched=WP.cities.find(c=>c===val);
-  if(!matched)matched=WP.cities.find(c=>c.includes(val));
-  if(!matched){document.getElementById('wpDistrict').style.display='none';renderWP();return}
-  
-  WP_CITY=matched;
-  // Check if this city has district data
-  var dists=new Set();
-  WP.cats.forEach(c=>{if(c.districts&&c.districts[matched]){Object.keys(c.districts[matched]).forEach(d=>dists.add(d))}});
-  var distArr=[...dists].sort();
-  var distSel=document.getElementById('wpDistrict');
-  if(distArr.length>0){
-    distSel.style.display='';
-    var h='';
-    distArr.forEach(d=>{h+='<option value="'+esc(d)+'">'});
-    document.getElementById('wpDistList').innerHTML=h;
-  }else{
-    distSel.style.display='none';
-  }
-  renderWP();
-}
-function renderWP(){
-  if(!WP)return;
-  var q=(document.getElementById('wpSearch').value||'').toLowerCase().trim();
-  var city=WP_CITY;
-  var district=(document.getElementById('wpDistrict').value||'').trim();
-  WP_DIST=district;
-  
-  var list=WP.cats.slice();
-  if(q){
-    list=list.filter(c=>{
-      if(c.short.toLowerCase().includes(q))return true;
-      if(c.cat.toLowerCase().includes(q))return true;
-      return c.words.some(w=>w.toLowerCase().includes(q));
-    });
-  }
-  if(q){
-    list.sort((a,b)=>{
-      var aM=a.words.some(w=>w.toLowerCase().includes(q))?0:1;
-      var bM=b.words.some(w=>w.toLowerCase().includes(q))?0:1;
-      return aM-bM||a.short.localeCompare(b.short);
-    });
-  }
-  
-  var locText=city?(' · '+city+(district?' '+district:'')):'';
-  document.getElementById('wpCount').textContent='共 '+list.length+' 个类目'+locText;
-  if(!list.length){document.getElementById('wpList').innerHTML='<div class="empty-msg">无匹配类目</div>';return}
-  
-  var show=list.slice(0,50),h='';
-  show.forEach(c=>{
-    var price=null,priceLabel='';
-    if(city&&district&&c.districts&&c.districts[city]&&c.districts[city][district]!==undefined){
-      price=c.districts[city][district];
-      priceLabel=city+' · '+district;
-    }else if(city&&c.prices[city]!==undefined){
-      price=c.prices[city];
-      priceLabel=city+(district?' (无该区定价，显示全市均价)':'');
-    }else if(city&&c.districts&&c.districts[city]){
-      var dPrices=Object.values(c.districts[city]);
-      if(dPrices.length){
-        var mn=Math.min(...dPrices),mx=Math.max(...dPrices);
-        priceLabel=city+' '+dPrices.length+'个区';
-        price=null;
-        var priceRange=mn===mx?'¥'+mn.toLocaleString():'¥'+mn.toLocaleString()+' ~ ¥'+mx.toLocaleString();
-      }
-    }
-    var priceRange2='';
-    if(!city){
-      var allP=Object.values(c.prices);
-      if(c.districts){Object.values(c.districts).forEach(dp=>{allP=allP.concat(Object.values(dp))})}
-      if(allP.length){
-        var mn=Math.min(...allP),mx=Math.max(...allP);
-        priceRange2=mn===mx?'¥'+mn.toLocaleString():'¥'+mn.toLocaleString()+' ~ ¥'+mx.toLocaleString();
-      }
-    }
-    
-    var wordHtml=c.words.map(w=>{
-      var isMatch=q&&w.toLowerCase().includes(q);
-      return '<span class="wp-word'+(isMatch?' match':'')+'">'+esc(w)+'</span>';
-    }).join('');
-    if(!c.words||c.words.length===0)wordHtml='<span style="color:#3a4a58;font-size:11px">无词包</span>';
-    
-    var prodHtml='';
-    if(c.prod&&c.prod.length&&c.prod[0]){
-      prodHtml='<div class="wp-products">';
-      c.prod.forEach(p=>{prodHtml+='<span class="wp-prod">'+p.replace('ADVERT_','')+'</span>'});
-      prodHtml+='</div>';
-    }
-    
-    h+='<div class="wp-card">';
-    h+='<div class="wp-cat-name">'+esc(c.short)+'</div>';
-    h+='<div class="wp-cat-meta">'+esc(c.cat)+' · '+c.wc+'个关键词'+(c.dist?' · 置顶'+c.dist+'km':'')+'</div>';
-    h+='<div class="wp-words">'+wordHtml+'</div>';
-    h+='<div class="wp-price-row">';
-    if(price!==null&&price!==undefined){
-      h+='<span class="wp-price">¥'+price.toLocaleString()+'</span>';
-      h+='<span class="wp-price-city">'+esc(priceLabel)+'</span>';
-    }else if(city&&priceLabel&&priceRange){
-      h+='<span class="wp-price">'+priceRange+'</span>';
-      h+='<span class="wp-price-city">'+esc(priceLabel)+'</span>';
-    }else if(priceRange2){
-      h+='<span class="wp-price">'+priceRange2+'</span>';
-      h+='<span class="wp-price-label">全城市价格区间</span>';
-    }else{
-      h+='<span class="wp-price" style="color:#5a6a88">暂无报价</span>';
-    }
-    if(c.dist)h+='<span class="wp-dist">最大置顶 '+c.dist+'km</span>';
-    h+='</div>';
-    h+=prodHtml;
-    h+='</div>';
-  });
-  
-  if(list.length>50)h+='<div class="empty-msg">显示前50个，请搜索缩小范围</div>';
-  document.getElementById('wpList').innerHTML=h;
-}
 </script>
 </body></html>
