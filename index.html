@@ -23,9 +23,6 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .kpi-card.orange .kpi-v{color:#ffaa44}
 .kpi-card.red .kpi-v{color:#ff6b6b}
 .filter-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
-.filter-sel{padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:8px;background:rgba(255,255,255,0.03);color:#8a9ab0;font-size:12px;outline:none;min-width:80px}
-.search-input{flex:1;min-width:100px;padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:8px;background:rgba(255,255,255,0.03);color:#d0d8e8;font-size:12px;outline:none}
-.filter-sel:focus,.search-input:focus{border-color:#4dd8ff}
 .count-bar{font-size:11px;color:#5a6a88;margin-bottom:8px}
 .empty-msg{text-align:center;padding:40px 20px;color:#5a6a88;font-size:13px}
 
@@ -33,23 +30,32 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .hm-legend{display:flex;gap:10px;padding:6px 0;font-size:11px;color:#5a6a88;flex-wrap:wrap;margin-bottom:8px}
 .hm-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:3px;vertical-align:middle}
 
-/* Multi-select filter */
-.hm-filter{background:#111b2e;border:1px solid rgba(77,216,255,0.08);border-radius:10px;padding:12px 14px;margin-bottom:10px}
-.hm-filter-label{font-size:11px;color:#5a6a88;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-.hm-filter-label .act-btn{font-size:10px;color:#4dd8ff;cursor:pointer;padding:2px 8px;border:1px solid rgba(77,216,255,0.2);border-radius:4px;background:transparent}
-.hm-filter-label .act-btn:hover{background:rgba(77,216,255,0.08)}
-.hm-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+/* Dropdown multi-select */
+.hm-dd-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;position:relative}
+.hm-dd-trigger{flex:1;min-width:140px;padding:8px 12px;background:#111b2e;border:1px solid rgba(77,216,255,0.15);border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;color:#8a9ab0;position:relative;transition:border-color .15s}
+.hm-dd-trigger:hover,.hm-dd-trigger.open{border-color:#4dd8ff}
+.hm-dd-trigger .dd-label{font-weight:600;color:#5a7a9a;white-space:nowrap;flex-shrink:0}
+.hm-dd-trigger .dd-tags{display:flex;flex-wrap:wrap;gap:3px;flex:1;overflow:hidden;max-height:22px}
+.hm-dd-trigger .dd-tag{padding:1px 6px;background:rgba(77,216,255,0.1);border:1px solid rgba(77,216,255,0.2);border-radius:4px;font-size:10px;color:#4dd8ff;white-space:nowrap;display:flex;align-items:center;gap:3px}
+.hm-dd-trigger .dd-tag .tx{cursor:pointer;font-size:8px;opacity:0.6;font-weight:700}
+.hm-dd-trigger .dd-tag .tx:hover{opacity:1}
+.hm-dd-trigger .dd-count{font-size:10px;color:#5a6a88;white-space:nowrap;flex-shrink:0}
+.hm-dd-trigger .dd-arrow{font-size:10px;color:#5a6a88;flex-shrink:0;transition:transform .2s}
+.hm-dd-trigger.open .dd-arrow{transform:rotate(180deg)}
+.hm-dd-panel{display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:#151f30;border:1px solid rgba(77,216,255,0.2);border-radius:8px;padding:10px;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,0.4);max-height:260px;overflow-y:auto}
+.hm-dd-panel.show{display:block}
+.hm-dd-panel::-webkit-scrollbar{width:4px}
+.hm-dd-panel::-webkit-scrollbar-thumb{background:rgba(77,216,255,0.15);border-radius:2px}
+.hm-dd-search{width:100%;padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:6px;background:rgba(255,255,255,0.03);color:#d0d8e8;font-size:12px;outline:none;margin-bottom:6px}
+.hm-dd-search:focus{border-color:#4dd8ff}
+.hm-dd-acts{display:flex;gap:6px;margin-bottom:6px}
+.hm-dd-acts button{font-size:10px;color:#4dd8ff;cursor:pointer;padding:2px 8px;border:1px solid rgba(77,216,255,0.2);border-radius:4px;background:transparent}
+.hm-dd-acts button:hover{background:rgba(77,216,255,0.08)}
+.hm-dd-chips{display:flex;flex-wrap:wrap;gap:4px}
 .hm-chip{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid rgba(77,216,255,0.12);background:rgba(255,255,255,0.02);color:#5a6a88;transition:all .15s;user-select:none}
 .hm-chip:hover{border-color:rgba(77,216,255,0.3);color:#8a9ab0}
 .hm-chip.on{background:rgba(77,216,255,0.12);border-color:rgba(77,216,255,0.35);color:#4dd8ff;font-weight:600}
-.hm-chip .chip-x{margin-left:4px;font-size:9px;opacity:0.5}
-.hm-city-search{width:100%;padding:6px 10px;border:1px solid rgba(77,216,255,0.15);border-radius:6px;background:rgba(255,255,255,0.03);color:#d0d8e8;font-size:12px;outline:none;margin-bottom:6px}
-.hm-city-search:focus{border-color:#4dd8ff}
-.hm-city-list{max-height:160px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:3px;padding:2px 0}
-.hm-city-list::-webkit-scrollbar{width:4px}
-.hm-city-list::-webkit-scrollbar-thumb{background:rgba(77,216,255,0.15);border-radius:2px}
-.hm-selected-bar{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
-.hm-selected-count{font-size:11px;color:#5a6a88}
+.hm-chip .cx{margin-left:3px;font-size:9px;opacity:0.5}
 
 .hm-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table.hm{border-collapse:separate;border-spacing:1px;font-size:11px;width:100%}
@@ -136,30 +142,38 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 
 <script>
 var HM=null,ZZ=null;
-var HM_SEL=new Set(),HM_CSEL=new Set(),HM_CSEARCH='';
-var ZZ_SEL=new Set(),ZZ_CSEL=new Set(),ZZ_CSEARCH='';
+var HM_SEL=new Set(),HM_CSEL=new Set();
+var ZZ_SEL=new Set(),ZZ_CSEL=new Set();
 var BIZ={city:'',cat:''};
+var OPEN_DD=null; // which dropdown is open: null, 'hm-city','hm-cat','zz-city','zz-cat'
 
 function switchTab(tab,el){
-  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(function(t){t.classList.remove('active')});
   el.classList.add('active');
   document.getElementById('tabBiz').classList.toggle('active',tab==='biz');
   document.getElementById('tabHeatmap').classList.toggle('active',tab==='heatmap');
   document.getElementById('tabZuanzhan').classList.toggle('active',tab==='zuanzhan');
+  closeDD();
   if(tab==='heatmap'&&!HM){
     document.getElementById('hmWrap').innerHTML='<div class="loading">加载中...</div>';
-    fetch('data/heatmap.json').then(r=>r.json()).then(d=>{HM=d;initHM()}).catch(e=>console.error(e));
+    fetch('data/heatmap.json').then(function(r){return r.json()}).then(function(d){HM=d;initHM()}).catch(function(e){console.error(e)});
   }
   if(tab==='zuanzhan'&&!ZZ){
     document.getElementById('zzWrap').innerHTML='<div class="loading">加载中...</div>';
-    fetch('data/zuanzhan-heatmap.json').then(r=>r.json()).then(d=>{ZZ=d;initZZ()}).catch(e=>console.error(e));
+    fetch('data/zuanzhan-heatmap.json').then(function(r){return r.json()}).then(function(d){ZZ=d;initZZ()}).catch(function(e){console.error(e)});
   }
 }
+
+// Close dropdown when clicking outside
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.hm-dd-row'))closeDD();
+});
+function closeDD(){OPEN_DD=null;document.querySelectorAll('.hm-dd-panel').forEach(function(p){p.classList.remove('show')});document.querySelectorAll('.hm-dd-trigger').forEach(function(t){t.classList.remove('open')})}
 
 // === Biz ===
 function jumpToBiz(cityName,catLabel,product){
   BIZ.city=cityName;BIZ.cat=catLabel;
-  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(function(t){t.classList.remove('active')});
   document.querySelectorAll('.main-tab')[0].classList.add('active');
   document.getElementById('tabBiz').classList.add('active');
   document.getElementById('tabHeatmap').classList.remove('active');
@@ -184,84 +198,145 @@ function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace
 
 // === Multi-select heatmap ===
 function initHM(){
-  HM_SEL=new Set(HM.cities.map(c=>c.city));
-  HM_CSEL=new Set(HM.cats.map(c=>c.id));
-  HM_CSEARCH='';
-  renderFilterUI('hm',HM,'顶展');renderMatrix('hm',HM,'顶展');
+  HM_SEL=new Set(HM.cities.map(function(c){return c.city}));
+  HM_CSEL=new Set(HM.cats.map(function(c){return c.id}));
+  renderDD('hm',HM,'顶展');renderMatrix('hm',HM,'顶展');
 }
 function initZZ(){
-  ZZ_SEL=new Set(ZZ.cities.map(c=>c.city));
-  ZZ_CSEL=new Set(ZZ.cats.map(c=>c.id));
-  ZZ_CSEARCH='';
-  renderFilterUI('zz',ZZ,'钻展');renderMatrix('zz',ZZ,'钻展');
+  ZZ_SEL=new Set(ZZ.cities.map(function(c){return c.city}));
+  ZZ_CSEL=new Set(ZZ.cats.map(function(c){return c.id}));
+  renderDD('zz',ZZ,'钻展');renderMatrix('zz',ZZ,'钻展');
 }
 
-function renderFilterUI(prefix,data,product){
+function toggleDD(id,e){
+  e.stopPropagation();
+  if(OPEN_DD===id){closeDD();return}
+  closeDD();OPEN_DD=id;
+  var panel=document.getElementById('panel-'+id);
+  var trigger=document.getElementById('trigger-'+id);
+  if(panel){panel.classList.add('show');trigger.classList.add('open')}
+  var search=document.getElementById('search-'+id);
+  if(search){search.value='';search.focus()}
+}
+
+function renderDD(prefix,data,product){
+  var el=document.getElementById(prefix+'Filter');
   var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
   var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
-  var csearch=prefix==='hm'?HM_CSEARCH:ZZ_CSEARCH;
-  var el=document.getElementById(prefix+'Filter');
-  var h='<div class="hm-filter">';
-  // Category chips
-  h+='<div class="hm-filter-label">类目 <button class="act-btn" onclick="toggleAllCat(\''+prefix+'\',\''+product+'\')">全选</button><button class="act-btn" onclick="clearAllCat(\''+prefix+'\',\''+product+'\')">清空</button></div>';
-  h+='<div class="hm-chips">';
-  data.cats.forEach(function(c){
-    var on=csel.has(c.id);
-    h+='<span class="hm-chip'+(on?' on':'')+'" onclick="toggleCat(\''+prefix+'\',\''+c.id+'\',\''+product+'\')">'+esc(c.label)+(on?'<span class="chip-x">✕</span>':'')+'</span>';
-  });
-  h+='</div>';
-  // City search
-  h+='<div class="hm-filter-label">城市 <button class="act-btn" onclick="toggleAllCity(\''+prefix+'\',\''+product+'\')">全选</button><button class="act-btn" onclick="clearAllCity(\''+prefix+'\',\''+product+'\')">清空</button></div>';
-  h+='<input class="hm-city-search" placeholder="搜索城市..." value="'+esc(csearch)+'" oninput="filterCities(\''+prefix+'\',this.value)">';
-  var cities=data.cities;
-  if(csearch){var q=csearch.toLowerCase();cities=cities.filter(function(c){return c.city.toLowerCase().indexOf(q)>=0||(c.lc||'').toLowerCase().indexOf(q)>=0||(c.region||'').toLowerCase().indexOf(q)>=0})}
-  h+='<div class="hm-city-list">';
-  cities.forEach(function(c){
-    var on=sel.has(c.city);
-    var label=c.city+(c.lc?'('+c.lc+')':'');
-    h+='<span class="hm-chip'+(on?' on':'')+'" onclick="toggleCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\',\''+product+'\')">'+esc(label)+(on?'<span class="chip-x">✕</span>':'')+'</span>';
-  });
-  h+='</div>';
-  if(sel.size>0||csel.size>0){
-    h+='<div class="hm-selected-bar"><span class="hm-selected-count">已选 '+sel.size+'城 × '+csel.size+'类目</span></div>';
+  var h='<div class="hm-dd-row">';
+  // Category dropdown
+  var catId=prefix+'-cat';
+  h+='<div class="hm-dd-trigger" id="trigger-'+catId+'" onclick="toggleDD(\''+catId+'\',event)">';
+  h+='<span class="dd-label">类目</span>';
+  h+='<div class="dd-tags">';
+  if(csel.size===data.cats.length&&csel.size>0){
+    h+='<span class="dd-count">全部 '+csel.size+'</span>';
+  }else if(csel.size===0){
+    h+='<span class="dd-count" style="color:#ff6b6b">未选</span>';
+  }else{
+    var shown=0;
+    data.cats.forEach(function(c){if(csel.has(c.id)&&shown<3){h+='<span class="dd-tag">'+esc(c.label)+'<span class="tx" onclick="event.stopPropagation();toggleCat(\''+prefix+'\',\''+c.id+'\')">✕</span></span>';shown++}});
+    if(csel.size>3)h+='<span class="dd-count">+'+(csel.size-3)+'</span>';
   }
+  h+='</div><span class="dd-arrow">▼</span></div>';
+  // City dropdown
+  var cityId=prefix+'-city';
+  h+='<div class="hm-dd-trigger" id="trigger-'+cityId+'" onclick="toggleDD(\''+cityId+'\',event)">';
+  h+='<span class="dd-label">城市</span>';
+  h+='<div class="dd-tags">';
+  if(sel.size===data.cities.length&&sel.size>0){
+    h+='<span class="dd-count">全部 '+sel.size+'</span>';
+  }else if(sel.size===0){
+    h+='<span class="dd-count" style="color:#ff6b6b">未选</span>';
+  }else{
+    var shown=0;
+    data.cities.forEach(function(c){if(sel.has(c.city)&&shown<3){h+='<span class="dd-tag">'+esc(c.city)+'<span class="tx" onclick="event.stopPropagation();toggleCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\')">✕</span></span>';shown++}});
+    if(sel.size>3)h+='<span class="dd-count">+'+(sel.size-3)+'</span>';
+  }
+  h+='</div><span class="dd-arrow">▼</span></div>';
   h+='</div>';
   el.innerHTML=h;
+  // Render dropdown panels (hidden by default)
+  renderDDPanels(prefix,data,product);
 }
 
-function toggleCat(prefix,catId,product){
+function renderDDPanels(prefix,data,product){
+  var el=document.getElementById(prefix+'Filter');
+  // Cat panel
+  var catId=prefix+'-cat';
+  var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
+  var cp='<div class="hm-dd-panel" id="panel-'+catId+'">';
+  cp+='<div class="hm-dd-acts"><button onclick="toggleAllCat(\''+prefix+'\')">全选</button><button onclick="clearAllCat(\''+prefix+'\')">清空</button></div>';
+  cp+='<div class="hm-dd-chips" id="chips-'+catId+'">';
+  data.cats.forEach(function(c){
+    var on=csel.has(c.id);
+    cp+='<span class="hm-chip'+(on?' on':'')+'" onclick="toggleCat(\''+prefix+'\',\''+c.id+'\')">'+esc(c.label)+(on?'<span class="cx">✕</span>':'')+'</span>';
+  });
+  cp+='</div></div>';
+  // City panel
+  var cityId=prefix+'-city';
+  var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
+  var pp='<div class="hm-dd-panel" id="panel-'+cityId+'">';
+  pp+='<input class="hm-dd-search" id="search-'+cityId+'" placeholder="搜索城市/菜系/大区..." oninput="filterDDCities(\''+prefix+'\',this.value)">';
+  pp+='<div class="hm-dd-acts"><button onclick="toggleAllCity(\''+prefix+'\')">全选</button><button onclick="clearAllCity(\''+prefix+'\')">清空</button></div>';
+  pp+='<div class="hm-dd-chips" id="chips-'+cityId+'">';
+  data.cities.forEach(function(c){
+    var on=sel.has(c.city);
+    var label=c.city+(c.lc?'('+c.lc+')':'');
+    pp+='<span class="hm-chip'+(on?' on':'')+'" data-city="'+esc(c.city)+'" data-lc="'+esc(c.lc||'')+'" data-region="'+esc(c.region||'')+'" onclick="toggleCity(\''+prefix+'\',\''+c.city.replace(/'/g,"\\'")+'\')">'+esc(label)+(on?'<span class="cx">✕</span>':'')+'</span>';
+  });
+  pp+='</div></div>';
+  el.innerHTML+=cp+pp;
+  // Re-open if was open
+  if(OPEN_DD===catId){document.getElementById('panel-'+catId).classList.add('show');document.getElementById('trigger-'+catId).classList.add('open')}
+  if(OPEN_DD===cityId){document.getElementById('panel-'+cityId).classList.add('show');document.getElementById('trigger-'+cityId).classList.add('open')}
+}
+
+function filterDDCities(prefix,val){
+  var q=val.toLowerCase();
+  var container=document.getElementById('chips-'+prefix+'-city');
+  if(!container)return;
+  container.querySelectorAll('.hm-chip').forEach(function(chip){
+    var city=(chip.getAttribute('data-city')||'').toLowerCase();
+    var lc=(chip.getAttribute('data-lc')||'').toLowerCase();
+    var region=(chip.getAttribute('data-region')||'').toLowerCase();
+    chip.style.display=(!q||city.indexOf(q)>=0||lc.indexOf(q)>=0||region.indexOf(q)>=0)?'':'none';
+  });
+}
+
+function toggleCat(prefix,catId){
   var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
   if(csel.has(catId))csel.delete(catId);else csel.add(catId);
-  var d=prefix==='hm'?HM:ZZ;
-  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+  var d=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
+  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
 }
-function toggleAllCat(prefix,product){
+function toggleAllCat(prefix){
   var d=prefix==='hm'?HM:ZZ;var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
   if(csel.size===d.cats.length)csel.clear();else d.cats.forEach(function(c){csel.add(c.id)});
-  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+  var p=prefix==='hm'?'顶展':'钻展';
+  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
 }
-function clearAllCat(prefix,product){
-  var d=prefix==='hm'?HM:ZZ;(prefix==='hm'?HM_CSEL:ZZ_CSEL).clear();
-  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+function clearAllCat(prefix){
+  (prefix==='hm'?HM_CSEL:ZZ_CSEL).clear();
+  var d=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
+  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
 }
-function toggleCity(prefix,city,product){
+function toggleCity(prefix,city){
   var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
   if(sel.has(city))sel.delete(city);else sel.add(city);
-  var d=prefix==='hm'?HM:ZZ;
-  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+  var d=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
+  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
 }
-function toggleAllCity(prefix,product){
+function toggleAllCity(prefix){
   var d=prefix==='hm'?HM:ZZ;var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
   if(sel.size===d.cities.length)sel.clear();else d.cities.forEach(function(c){sel.add(c.city)});
-  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
+  var p=prefix==='hm'?'顶展':'钻展';
+  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
 }
-function clearAllCity(prefix,product){
-  var d=prefix==='hm'?HM:ZZ;(prefix==='hm'?HM_SEL:ZZ_SEL).clear();
-  renderFilterUI(prefix,d,product);renderMatrix(prefix,d,product);
-}
-function filterCities(prefix,val){
-  if(prefix==='hm')HM_CSEARCH=val;else ZZ_CSEARCH=val;
-  var d=prefix==='hm'?HM:ZZ;renderFilterUI(prefix,d,'');
+function clearAllCity(prefix){
+  (prefix==='hm'?HM_SEL:ZZ_SEL).clear();
+  var d=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
+  renderDD(prefix,d,p);renderMatrix(prefix,d,p);
 }
 
 function renderMatrix(prefix,data,product){
