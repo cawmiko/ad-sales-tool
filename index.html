@@ -240,7 +240,6 @@ function onInput(prefix,type){
   var input=document.getElementById(inputId);
   var sug=document.getElementById(sugId);
   var q=(input.value||'').trim().toLowerCase();
-  if(!q){sug.classList.remove('show');return}
   var data=prefix==='hm'?HM:ZZ;
   var items,selected;
   if(type==='city'){
@@ -250,10 +249,19 @@ function onInput(prefix,type){
     if(prefix==='hm'&&HM_REGION!=='all'){
       cityList=cityList.filter(function(c){return c.region===HM_REGION});
     }
-    items=cityList.filter(function(c){return c.city.toLowerCase().indexOf(q)>=0&&!selected.has(c.city)}).slice(0,20);
+    // Show all unselected cities from region when input is focused (even without typing)
+    if(!q){
+      items=cityList.filter(function(c){return !selected.has(c.city)}).slice(0,30);
+    }else{
+      items=cityList.filter(function(c){return c.city.toLowerCase().indexOf(q)>=0&&!selected.has(c.city)}).slice(0,20);
+    }
   }else{
     selected=prefix==='hm'?HM_CSEL:ZZ_CSEL;
-    items=data.cats.filter(function(c){return c.label.toLowerCase().indexOf(q)>=0&&!selected.has(c.id)}).slice(0,20);
+    if(!q){
+      items=data.cats.filter(function(c){return !selected.has(c.id)}).slice(0,30);
+    }else{
+      items=data.cats.filter(function(c){return c.label.toLowerCase().indexOf(q)>=0&&!selected.has(c.id)}).slice(0,20);
+    }
   }
   if(!items.length){sug.classList.remove('show');return}
   var h='';
