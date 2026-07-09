@@ -138,7 +138,7 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 <script>
 var HM=null,ZZ=null;
 var HM_SEL=new Set(),HM_CSEL=new Set(),HM_REGION='all';
-var ZZ_SEL=new Set(),ZZ_CSEL=new Set();
+var ZZ_SEL=new Set(),ZZ_CSEL=new Set(),ZZ_REGION='all';
 var DIRECT_CITIES=['北京市','杭州市','武汉市','西安市','青岛市'];
 var BIZ={city:'',cat:''};
 
@@ -191,7 +191,8 @@ function initHM(){
   renderFilter('hm',HM,'顶展');renderMatrix('hm',HM,'顶展');
 }
 function initZZ(){
-  ZZ_SEL=new Set(ZZ.cities.map(function(c){return c.city}));
+  var dcSet=new Set(DIRECT_CITIES);
+  ZZ_SEL=new Set(ZZ.cities.filter(function(c){return !dcSet.has(c.city)}).map(function(c){return c.city}));
   ZZ_CSEL=new Set(ZZ.cats.map(function(c){return c.id}));
   renderFilter('zz',ZZ,'钻展');renderMatrix('zz',ZZ,'钻展');
 }
@@ -202,23 +203,24 @@ function renderFilter(prefix,data,product){
   var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
   var el=document.getElementById(prefix+'Filter');
   var h='';
-  // Region filter (only for 顶展)
-  if(prefix==='hm'){
-    h+='<div class="hm-region-row"><span class="rlabel">区域</span>';
-    h+='<span class="hm-rbtn'+(HM_REGION==='all'?' on':'')+'" onclick="setHMRegion(\'all\')">全部</span>';
-    data.regions.forEach(function(r){h+='<span class="hm-rbtn'+(HM_REGION===r?' on':'')+'" onclick="setHMRegion(\''+r+'\')">'+r+'</span>'});
-    h+='</div>';
-  }
+  // Region filter (for both 顶展 and 钻展)
+  var curRegion=prefix==='hm'?HM_REGION:ZZ_REGION;
+  var regionFn=prefix==='hm'?'setHMRegion':'setZZRegion';
+  h+='<div class="hm-region-row"><span class="rlabel">区域</span>';
+  h+='<span class="hm-rbtn'+(curRegion==='all'?' on':'')+'" onclick="'+regionFn+'(\'all\')">全部</span>';
+  data.regions.forEach(function(r){h+='<span class="hm-rbtn'+(curRegion===r?' on':'')+'" onclick="'+regionFn+'(\''+r+'\')">'+r+'</span>'});
+  h+='</div>';
   h+='<div class="hm-fbar">';
   // City input
   h+='<div class="hm-fbox">';
   h+='<div class="hm-fbox-label">城市 <button class="act" onclick="addAll(\''+prefix+'\',\'city\')">全选</button><button class="act" onclick="clearAll(\''+prefix+'\',\'city\')">清空</button></div>';
   h+='<input class="hm-finput" id="cityInput-'+prefix+'" placeholder="输入城市名..." oninput="onInput(\''+prefix+'\',\'city\')" onfocus="onInput(\''+prefix+'\',\'city\')">';
   h+='<div class="hm-suggest" id="citySug-'+prefix+'"></div>';
-  // Show selected city tags (filtered by current region for 顶展)
+  // Show selected city tags (filtered by current region)
   var showCities=data.cities;
-  if(prefix==='hm'&&HM_REGION!=='all'){
-    showCities=showCities.filter(function(c){return c.region===HM_REGION});
+  var curRegion=prefix==='hm'?HM_REGION:ZZ_REGION;
+  if(curRegion!=='all'){
+    showCities=showCities.filter(function(c){return c.region===curRegion});
   }
   var hasSelected=false;
   showCities.forEach(function(c){if(sel.has(c.city))hasSelected=true});
@@ -227,15 +229,13 @@ function renderFilter(prefix,data,product){
     showCities.forEach(function(c){if(sel.has(c.city))h+='<span class="hm-tag">'+esc(c.city)+'<span class="tx" onclick="removeItem(\''+prefix+'\',\'city\',\''+c.city.replace(/'/g,"\\'")+'\')">✕</span></span>'});
     h+='</div>';
   }
-  // Direct city badges (only for 顶展)
-  if(prefix==='hm'){
-    var dcSet=new Set(DIRECT_CITIES);
-    var dcs=data.cities.filter(function(c){return dcSet.has(c.city)});
-    if(dcs.length>0){
-      h+='<div class="hm-tags" style="margin-top:6px">';
-      dcs.forEach(function(c){h+='<span class="hm-tag" style="border-color:rgba(255,170,68,0.3);color:#ffaa44">'+esc(c.city)+' <span style="font-size:9px;opacity:0.7">直营城市</span></span>'});
-      h+='</div>';
-    }
+  // Direct city badges (for both tabs)
+  var dcSet=new Set(DIRECT_CITIES);
+  var dcs=data.cities.filter(function(c){return dcSet.has(c.city)});
+  if(dcs.length>0){
+    h+='<div class="hm-tags" style="margin-top:6px">';
+    dcs.forEach(function(c){h+='<span class="hm-tag" style="border-color:rgba(255,170,68,0.3);color:#ffaa44">'+esc(c.city)+' <span style="font-size:9px;opacity:0.7">直营城市</span></span>'});
+    h+='</div>';
   }
   h+='</div>';
   // Category input
@@ -264,15 +264,14 @@ function onInput(prefix,type){
   if(type==='city'){
     selected=prefix==='hm'?HM_SEL:ZZ_SEL;
     var cityList=data.cities;
-    // Filter by region for 顶展
-    if(prefix==='hm'&&HM_REGION!=='all'){
-      cityList=cityList.filter(function(c){return c.region===HM_REGION});
+    // Filter by region
+    var curRegion=prefix==='hm'?HM_REGION:ZZ_REGION;
+    if(curRegion!=='all'){
+      cityList=cityList.filter(function(c){return c.region===curRegion});
     }
     // Exclude direct cities
-    if(prefix==='hm'){
-      var dcSet=new Set(DIRECT_CITIES);
-      cityList=cityList.filter(function(c){return !dcSet.has(c.city)});
-    }
+    var dcSet=new Set(DIRECT_CITIES);
+    cityList=cityList.filter(function(c){return !dcSet.has(c.city)});
     // Show all unselected cities from region when input is focused (even without typing)
     if(!q){
       items=cityList.filter(function(c){return !selected.has(c.city)}).slice(0,30);
@@ -324,13 +323,12 @@ function addAll(prefix,type){
   if(type==='city'){
     var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
     var cityList=data.cities;
-    if(prefix==='hm'&&HM_REGION!=='all'){
-      cityList=cityList.filter(function(c){return c.region===HM_REGION});
+    var curRegion=prefix==='hm'?HM_REGION:ZZ_REGION;
+    if(curRegion!=='all'){
+      cityList=cityList.filter(function(c){return c.region===curRegion});
     }
-    if(prefix==='hm'){
-      var dcSet=new Set(DIRECT_CITIES);
-      cityList=cityList.filter(function(c){return !dcSet.has(c.city)});
-    }
+    var dcSet=new Set(DIRECT_CITIES);
+    cityList=cityList.filter(function(c){return !dcSet.has(c.city)});
     cityList.forEach(function(c){sel.add(c.city)});
   }else{
     var sel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
@@ -358,6 +356,18 @@ function setHMRegion(r){
     });
   }
   renderFilter('hm',HM,'顶展');renderMatrix('hm',HM,'顶展');
+}
+function setZZRegion(r){
+  ZZ_REGION=r;
+  var dcSet=new Set(DIRECT_CITIES);
+  if(r==='all'){
+    ZZ.cities.forEach(function(c){if(!dcSet.has(c.city))ZZ_SEL.add(c.city)});
+  }else{
+    ZZ.cities.forEach(function(c){
+      if(c.region===r&&!dcSet.has(c.city)) ZZ_SEL.add(c.city);
+    });
+  }
+  renderFilter('zz',ZZ,'钻展');renderMatrix('zz',ZZ,'钻展');
 }
 
 // === Matrix rendering ===
