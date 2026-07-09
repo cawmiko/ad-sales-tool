@@ -28,6 +28,13 @@ body{font-family:"PingFang SC",-apple-system,sans-serif;background:#0b1120;color
 .hm-legend{display:flex;gap:10px;padding:6px 0;font-size:11px;color:#5a6a88;flex-wrap:wrap;margin-bottom:8px}
 .hm-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:3px;vertical-align:middle}
 
+/* Region filter */
+.hm-region-row{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.hm-region-row .rlabel{font-size:11px;color:#5a6a88;font-weight:600;margin-right:4px}
+.hm-rbtn{padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid rgba(77,216,255,0.12);background:rgba(255,255,255,0.02);color:#5a6a88;transition:all .15s;user-select:none}
+.hm-rbtn:hover{border-color:rgba(77,216,255,0.3);color:#8a9ab0}
+.hm-rbtn.on{background:rgba(77,216,255,0.12);border-color:rgba(77,216,255,0.35);color:#4dd8ff;font-weight:600}
+
 /* Filter bar - input + autocomplete for both city and category */
 .hm-fbar{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
 .hm-fbox{flex:1;min-width:160px;position:relative}
@@ -130,7 +137,7 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 
 <script>
 var HM=null,ZZ=null;
-var HM_SEL=new Set(),HM_CSEL=new Set();
+var HM_SEL=new Set(),HM_CSEL=new Set(),HM_REGION='all';
 var ZZ_SEL=new Set(),ZZ_CSEL=new Set();
 var BIZ={city:'',cat:''};
 
@@ -187,12 +194,20 @@ function initZZ(){
   renderFilter('zz',ZZ,'钻展');renderMatrix('zz',ZZ,'钻展');
 }
 
-// === Filter UI: both city and category are input + autocomplete ===
+// === Filter UI: region + city input + category input ===
 function renderFilter(prefix,data,product){
   var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
   var csel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
   var el=document.getElementById(prefix+'Filter');
-  var h='<div class="hm-fbar">';
+  var h='';
+  // Region filter (only for 顶展)
+  if(prefix==='hm'){
+    h+='<div class="hm-region-row"><span class="rlabel">区域</span>';
+    h+='<span class="hm-rbtn'+(HM_REGION==='all'?' on':'')+'" onclick="setHMRegion(\'all\')">全部</span>';
+    data.regions.forEach(function(r){h+='<span class="hm-rbtn'+(HM_REGION===r?' on':'')+'" onclick="setHMRegion(\''+r+'\')">'+r+'</span>'});
+    h+='</div>';
+  }
+  h+='<div class="hm-fbar">';
   // City input
   h+='<div class="hm-fbox">';
   h+='<div class="hm-fbox-label">城市 <button class="act" onclick="addAll(\''+prefix+'\',\'city\')">全选</button><button class="act" onclick="clearAll(\''+prefix+'\',\'city\')">清空</button></div>';
@@ -230,7 +245,12 @@ function onInput(prefix,type){
   var items,selected;
   if(type==='city'){
     selected=prefix==='hm'?HM_SEL:ZZ_SEL;
-    items=data.cities.filter(function(c){return c.city.toLowerCase().indexOf(q)>=0&&!selected.has(c.city)}).slice(0,20);
+    var cityList=data.cities;
+    // Filter by region for 顶展
+    if(prefix==='hm'&&HM_REGION!=='all'){
+      cityList=cityList.filter(function(c){return c.region===HM_REGION});
+    }
+    items=cityList.filter(function(c){return c.city.toLowerCase().indexOf(q)>=0&&!selected.has(c.city)}).slice(0,20);
   }else{
     selected=prefix==='hm'?HM_CSEL:ZZ_CSEL;
     items=data.cats.filter(function(c){return c.label.toLowerCase().indexOf(q)>=0&&!selected.has(c.id)}).slice(0,20);
@@ -271,7 +291,11 @@ function addAll(prefix,type){
   var data=prefix==='hm'?HM:ZZ;
   if(type==='city'){
     var sel=prefix==='hm'?HM_SEL:ZZ_SEL;
-    data.cities.forEach(function(c){sel.add(c.city)});
+    var cityList=data.cities;
+    if(prefix==='hm'&&HM_REGION!=='all'){
+      cityList=cityList.filter(function(c){return c.region===HM_REGION});
+    }
+    cityList.forEach(function(c){sel.add(c.city)});
   }else{
     var sel=prefix==='hm'?HM_CSEL:ZZ_CSEL;
     data.cats.forEach(function(c){sel.add(c.id)});
@@ -284,6 +308,14 @@ function clearAll(prefix,type){
   else(prefix==='hm'?HM_CSEL:ZZ_CSEL).clear();
   var data=prefix==='hm'?HM:ZZ;var p=prefix==='hm'?'顶展':'钻展';
   renderFilter(prefix,data,p);renderMatrix(prefix,data,p);
+}
+function setHMRegion(r){
+  HM_REGION=r;
+  // Clear selected cities that don't belong to new region
+  if(r!=='all'){
+    HM.cities.forEach(function(c){if(c.region!==r)HM_SEL.delete(c.city)});
+  }
+  renderFilter('hm',HM,'顶展');renderMatrix('hm',HM,'顶展');
 }
 
 // === Matrix rendering ===
