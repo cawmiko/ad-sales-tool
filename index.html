@@ -75,13 +75,28 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 
 /* Biz context card */
 .biz-context-card{background:#111b2e;border:1px solid rgba(77,216,255,0.12);border-radius:12px;padding:20px;margin-top:8px}
-.biz-ctx-header{font-size:15px;font-weight:700;color:#4dd8ff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.biz-ctx-icon{font-size:18px}
-.biz-ctx-info{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
-.biz-ctx-item{background:rgba(77,216,255,0.06);border:1px solid rgba(77,216,255,0.1);border-radius:8px;padding:10px 16px;min-width:100px}
-.biz-ctx-label{display:block;font-size:10px;color:#5a6a88;margin-bottom:4px}
-.biz-ctx-value{display:block;font-size:16px;font-weight:700;color:#e0e6f0}
-.biz-ctx-placeholder{text-align:center;padding:20px;color:#5a6a88;font-size:12px;border-top:1px solid rgba(77,216,255,0.06)}
+.biz-bar{display:flex;gap:8px;padding:12px 16px;flex-wrap:wrap;align-items:center;border-bottom:1px solid rgba(77,216,255,0.06)}
+.biz-bar select,.biz-bar input{background:rgba(77,216,255,0.06);border:1px solid rgba(77,216,255,0.15);color:#d0d8e8;border-radius:6px;padding:6px 10px;font-size:12px;outline:none}
+.biz-bar select{min-width:80px}
+.biz-bar input{flex:1;min-width:120px}
+.biz-stats{display:flex;gap:12px;padding:8px 16px;font-size:11px;color:#5a6a88;border-bottom:1px solid rgba(77,216,255,0.04)}
+.biz-stats span{color:#4dd8ff;font-weight:700}
+.biz-list{padding:0 16px 16px}
+.biz-item{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(77,216,255,0.04);transition:background 0.15s}
+.biz-item:hover{background:rgba(77,216,255,0.04)}
+.biz-tag{font-size:10px;padding:2px 6px;border-radius:3px;font-weight:600;white-space:nowrap}
+.biz-tag.hm{background:rgba(77,216,255,0.12);color:#4dd8ff}
+.biz-tag.zz{background:rgba(240,160,48,0.12);color:#f0a030}
+.biz-tag.empty{background:rgba(102,255,170,0.1);color:#66ffaa}
+.biz-tag.rel{background:rgba(255,170,68,0.1);color:#ffaa44}
+.biz-city{font-size:13px;font-weight:600;color:#e0e6f0;min-width:60px}
+.biz-cat{font-size:12px;color:#8a9ab0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.biz-region{font-size:10px;color:#5a6a88;min-width:32px;text-align:center}
+.biz-link{font-size:10px;color:#4dd8ff;text-decoration:none;padding:3px 8px;border:1px solid rgba(77,216,255,0.2);border-radius:4px;white-space:nowrap}
+.biz-link:hover{background:rgba(77,216,255,0.1)}
+.biz-more{text-align:center;padding:16px;color:#5a6a88;font-size:12px;cursor:pointer}
+.biz-more:hover{color:#4dd8ff}
+.biz-empty{text-align:center;padding:60px 20px;color:#5a6a88}
 </style></head><body>
 
 <div class="hdr">
@@ -97,12 +112,30 @@ table.hm td.sr{color:#ffaa44;font-weight:700;text-align:center;padding:4px 6px}
 
 <!-- Biz tab -->
 <div id="tabBiz" class="tab-content active">
-  <div id="bizList">
-    <div class="empty-msg" style="text-align:center;padding:60px 20px;color:#5a6a88">
-      <div style="font-size:36px;margin-bottom:12px">📋</div>
-      <div style="font-size:14px;color:#8a9ab0;margin-bottom:8px">商机明细数据待更新</div>
-      <div style="font-size:12px">从顶展/钻展抢占地图的空白格点击，可跳转到对应城市+类目查看商机</div>
-    </div>
+  <div class="biz-bar">
+    <select id="bizProduct" onchange="filterBiz()">
+      <option value="all">全部产品</option>
+      <option value="顶展">顶展</option>
+      <option value="钻展">钻展</option>
+    </select>
+    <select id="bizStatus" onchange="filterBiz()">
+      <option value="all">全部状态</option>
+      <option value="empty">空白可抢</option>
+      <option value="release30">30天释放</option>
+    </select>
+    <select id="bizRegion" onchange="filterBiz()">
+      <option value="all">全部区域</option>
+      <option value="华北">华北</option>
+      <option value="华东">华东</option>
+      <option value="华中">华中</option>
+      <option value="华南">华南</option>
+      <option value="华西">华西</option>
+    </select>
+    <input id="bizSearch" placeholder="搜索城市或类目..." oninput="filterBiz()">
+  </div>
+  <div class="biz-stats" id="bizStats"></div>
+  <div class="biz-list" id="bizList">
+    <div class="biz-empty"><div style="font-size:36px;margin-bottom:12px">📋</div><div style="font-size:14px;color:#8a9ab0">加载商机数据中...</div></div>
   </div>
 </div>
 
@@ -141,6 +174,7 @@ var HM_SEL=new Set(),HM_CSEL=new Set(),HM_REGION='all';
 var ZZ_SEL=new Set(),ZZ_CSEL=new Set(),ZZ_REGION='all';
 var DIRECT_CITIES=['北京市','杭州市','武汉市','西安市','青岛市'];
 var BIZ={city:'',cat:''};
+var OPPS=null,BIZ_FILTERED=[],BIZ_PAGE=0,BIZ_PAGE_SIZE=50;
 
 function switchTab(tab,el){
   document.querySelectorAll('.main-tab').forEach(function(t){t.classList.remove('active')});
@@ -149,6 +183,7 @@ function switchTab(tab,el){
   document.getElementById('tabHeatmap').classList.toggle('active',tab==='heatmap');
   document.getElementById('tabZuanzhan').classList.toggle('active',tab==='zuanzhan');
   closeSuggest();
+  if(tab==='biz'&&!OPPS){loadOpps()}
   if(tab==='heatmap'&&!HM){
     document.getElementById('hmWrap').innerHTML='<div class="loading">加载中...</div>';
     fetch('data/heatmap.json?v='+Date.now()).then(function(r){return r.json()}).then(function(d){HM=d;initHM()});
@@ -163,6 +198,7 @@ document.addEventListener('click',function(e){if(!e.target.closest('.hm-fbox'))c
 function closeSuggest(){document.querySelectorAll('.hm-suggest').forEach(function(s){s.classList.remove('show')})}
 
 // === Biz ===
+var FBI_BASE='https://fbi.alibaba-inc.com/dashboard/view/page.htm?id=1860251';
 function jumpToBiz(cityName,catLabel,product){
   BIZ.city=cityName;BIZ.cat=catLabel;
   document.querySelectorAll('.main-tab').forEach(function(t){t.classList.remove('active')});
@@ -170,16 +206,69 @@ function jumpToBiz(cityName,catLabel,product){
   document.getElementById('tabBiz').classList.add('active');
   document.getElementById('tabHeatmap').classList.remove('active');
   document.getElementById('tabZuanzhan').classList.remove('active');
-  renderBizContext(product);window.scrollTo(0,0);
+  // Pre-set filters
+  document.getElementById('bizProduct').value=product;
+  document.getElementById('bizSearch').value=cityName;
+  if(!OPPS){loadOpps()}else{filterBiz()}
+  window.scrollTo(0,0);
 }
-function renderBizContext(product){
-  var h='<div class="biz-context-card"><div class="biz-ctx-header"><span class="biz-ctx-icon">📍</span>来自'+product+'抢占地图</div>';
-  h+='<div class="biz-ctx-info">';
-  h+='<div class="biz-ctx-item"><span class="biz-ctx-label">城市</span><span class="biz-ctx-value">'+esc(BIZ.city)+'</span></div>';
-  h+='<div class="biz-ctx-item"><span class="biz-ctx-label">类目</span><span class="biz-ctx-value">'+esc(BIZ.cat)+'</span></div>';
-  h+='<div class="biz-ctx-item"><span class="biz-ctx-label">状态</span><span class="biz-ctx-value" style="color:#66ffaa">空白可抢</span></div>';
-  h+='</div><div class="biz-ctx-placeholder">商机明细数据待更新，届时将展示该城市+类目下的具体商户商机</div></div>';
-  document.getElementById('bizList').innerHTML=h;
+function loadOpps(){
+  document.getElementById('bizList').innerHTML='<div class="biz-empty"><div style="font-size:14px;color:#8a9ab0">加载商机数据中...</div></div>';
+  fetch('data/opportunities.json?v='+Date.now()).then(function(r){return r.json()}).then(function(d){
+    OPPS=d;filterBiz();
+  });
+}
+function filterBiz(){
+  if(!OPPS){loadOpps();return}
+  var prod=document.getElementById('bizProduct').value;
+  var status=document.getElementById('bizStatus').value;
+  var region=document.getElementById('bizRegion').value;
+  var q=(document.getElementById('bizSearch').value||'').trim().toLowerCase();
+  // Filter: [city, region, cat, group, product, status(0=empty,1=rel30), days, date]
+  BIZ_FILTERED=OPPS.filter(function(o){
+    if(prod!=='all'&&o[4]!==prod)return false;
+    if(status==='empty'&&o[5]!==0)return false;
+    if(status==='release30'&&o[5]!==1)return false;
+    if(region!=='all'&&o[1]!==region)return false;
+    if(q&&o[0].toLowerCase().indexOf(q)<0&&o[2].toLowerCase().indexOf(q)<0)return false;
+    return true;
+  });
+  BIZ_PAGE=0;
+  renderBizStats();
+  renderBizPage();
+}
+function renderBizStats(){
+  var f=BIZ_FILTERED;
+  var empty=f.filter(function(o){return o[5]===0}).length;
+  var rel=f.filter(function(o){return o[5]===1}).length;
+  document.getElementById('bizStats').innerHTML=
+    '共 <span>'+f.length+'</span> 条商机 · 空白可抢 <span>'+empty+'</span> · 30天释放 <span>'+rel+'</span>';
+}
+function renderBizPage(){
+  var f=BIZ_FILTERED;
+  var list=document.getElementById('bizList');
+  if(!f.length){list.innerHTML='<div class="biz-empty"><div style="font-size:36px;margin-bottom:12px">✅</div><div style="font-size:14px;color:#8a9ab0">没有匹配的商机</div></div>';return}
+  var end=Math.min((BIZ_PAGE+1)*BIZ_PAGE_SIZE,f.length);
+  var h='';
+  for(var i=BIZ_PAGE*BIZ_PAGE_SIZE;i<end;i++){
+    var o=f[i];
+    var pClass=o[4]==='顶展'?'hm':'zz';
+    var sClass=o[5]===0?'empty':'rel';
+    var sText=o[5]===0?'空白可抢':(o[6]+'天释放');
+    var fbiUrl=FBI_BASE;
+    h+='<div class="biz-item">';
+    h+='<span class="biz-tag '+pClass+'">'+o[4]+'</span>';
+    h+='<span class="biz-tag '+sClass+'">'+sText+'</span>';
+    h+='<span class="biz-region">'+o[1]+'</span>';
+    h+='<span class="biz-city">'+esc(o[0])+'</span>';
+    h+='<span class="biz-cat">'+esc(o[2])+'</span>';
+    h+='<a class="biz-link" href="'+fbiUrl+'" target="_blank" rel="noopener">查看门店</a>';
+    h+='</div>';
+  }
+  if(end<f.length){
+    h+='<div class="biz-more" onclick="BIZ_PAGE++;renderBizPage()">加载更多 ('+end+'/'+f.length+') ▾</div>';
+  }
+  list.innerHTML=h;
 }
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
